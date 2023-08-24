@@ -1,4 +1,4 @@
-package dev.jianastrero.compose_nav_transition.ui.theme
+package dev.jianastrero.compose_nav_transition.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

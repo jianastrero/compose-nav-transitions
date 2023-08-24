@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.jianastrero.compose_nav_transition"
+    namespace = "dev.jianastrero.compose_nav_transition.example"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "dev.jianastrero.compose_nav_transition"
+        applicationId = "dev.jianastrero.compose_nav_transition.example"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

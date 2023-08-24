@@ -1,4 +1,4 @@
-package dev.jianastrero.compose_nav_transition
+package dev.jianastrero.compose_nav_transition.example
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.jianastrero.compose_nav_transition.ui.theme.ComposeNavTransitionTheme
+import dev.jianastrero.compose_nav_transition.example.ui.theme.ComposeNavTransitionTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
