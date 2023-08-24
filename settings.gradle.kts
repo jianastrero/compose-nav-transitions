@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Compose Nav Transition"
-include(":example")
+include(":example", ":compose-nav-transition")
