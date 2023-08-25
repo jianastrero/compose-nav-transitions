@@ -10,9 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import dev.jianastrero.compose_nav_transition.NavTransition
 
 
 private val DEFAULT_ENTRY_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
@@ -50,7 +53,11 @@ fun NavTransitionHost(
     NavHost(
         navController = navController,
         graph = navGraph,
-        modifier = modifier,
+        modifier = Modifier
+            .onGloballyPositioned {
+                NavTransition.hostOffset = it.positionInRoot()
+            }
+            .then(modifier),
         contentAlignment = contentAlignment,
         enterTransition = DEFAULT_ENTRY_TRANSITION,
         exitTransition = DEFAULT_EXIT_TRANSITION,
