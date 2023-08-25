@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import dev.jianastrero.compose_nav_transition.NavTransition
+import dev.jianastrero.compose_nav_transition.NavTransitions
 
 
 private val DEFAULT_ENTRY_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
@@ -32,14 +32,6 @@ fun NavTransitionHost(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
     route: String? = null,
-    enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
-        { fadeIn(animationSpec = tween(700)) },
-    exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
-        { fadeOut(animationSpec = tween(700)) },
-    popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
-        enterTransition,
-    popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
-        exitTransition,
     builder: NavTransitionGraphBuilder.() -> Unit
 ) {
     val navGraph = remember(navController, startDestination, route, builder) {
@@ -55,7 +47,7 @@ fun NavTransitionHost(
         graph = navGraph,
         modifier = Modifier
             .onGloballyPositioned {
-                NavTransition.hostOffset = it.positionInRoot()
+                NavTransitions.hostOffset = it.positionInRoot()
             }
             .then(modifier),
         contentAlignment = contentAlignment,
