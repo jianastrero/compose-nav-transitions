@@ -10,15 +10,15 @@ import androidx.compose.ui.geometry.Rect
 internal object NavTransition {
     var hostOffset = Offset.Zero
     private var _currentElements: Map<String, Rect> by mutableStateOf(mapOf())
+    private var _previousElements: Map<String, Rect> by mutableStateOf(mapOf())
 
     val currentElements: Map<String, Rect>
         get() = _currentElements
 
     fun clearCurrentElements() {
+        _previousElements = _currentElements
         _currentElements = mapOf()
     }
-
-    fun getCurrentElement(tag: String): Rect? = _currentElements[tag]
 
     fun addToCurrentElement(tag: String, rect: Rect) {
         Log.d("JIANDDEBUG", "adding new element: $tag -> $rect")
