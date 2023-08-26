@@ -13,7 +13,9 @@ https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f
 
 ## Installation
 
-TODO: Publish to Maven Central
+```kotlin
+implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:0.1.0-alpha01")
+```
 
 ## Usage
 
