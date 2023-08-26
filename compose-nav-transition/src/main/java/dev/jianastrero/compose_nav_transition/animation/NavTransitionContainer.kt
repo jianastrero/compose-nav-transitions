@@ -3,7 +3,8 @@ package dev.jianastrero.compose_nav_transition.animation
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -50,7 +49,7 @@ private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
     val tags by remember {
         derivedStateOf {
-            NavTransitions.keysFor(route, NavTransitions.lastRoute)
+            NavTransitions.keysFor(route, previousRoute)
         }
     }
 
@@ -60,23 +59,30 @@ private fun NavTransitionScope.TransitionAnimations() {
         animationSpec = tween(600)
     )
 
+    val isAnimating by remember {
+        derivedStateOf {
+            animate || animationProgress < 1f
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
             .let {
-                if (animationProgress == 1f) it
-                else it.pointerInput(Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            animate = true
-                        }
+                if (isAnimating) {
+                    it
+                } else {
+                    it.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {}
                     )
                 }
             }
     ) {
         tags.forEach {
-            val startRect = NavTransitions.screenSharedElements[NavTransitions.lastRoute]
+            val startRect = NavTransitions.screenSharedElements[previousRoute]
                 ?.get(it)
                 ?.toDpRect(density)
                 ?: DpRect.Zero
@@ -94,15 +100,9 @@ private fun NavTransitionScope.TransitionAnimations() {
         }
     }
 
-    LaunchedEffect(route, NavTransitions.lastRoute) {
-        if (!animate && NavTransitions.lastRoute != route) {
+    LaunchedEffect(route, previousRoute) {
+        if (isAnimating) {
             animate = true
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            NavTransitions.lastRoute = route
         }
     }
 }
