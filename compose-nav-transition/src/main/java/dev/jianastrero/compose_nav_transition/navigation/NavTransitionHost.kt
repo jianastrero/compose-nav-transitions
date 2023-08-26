@@ -46,13 +46,6 @@ import androidx.navigation.compose.NavHost
 import dev.jianastrero.compose_nav_transition.NavTransitions
 
 
-private val DEFAULT_ENTRY_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
-    { fadeIn(animationSpec = tween(200)) }
-
-private val DEFAULT_EXIT_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
-    { fadeOut(animationSpec = tween(200)) }
-
-
 @Composable
 fun NavTransitionHost(
     navController: NavHostController,
@@ -60,11 +53,21 @@ fun NavTransitionHost(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
     route: String? = null,
+    transitionDuration: Int = 200,
     builder: NavTransitionGraphBuilder.() -> Unit
 ) {
     var currentScope: NavTransitionScope? by remember { mutableStateOf(null) }
+    val enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
+        remember(transitionDuration) {
+            { fadeIn(tween(transitionDuration)) }
+        }
+    val exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
+        remember(transitionDuration) {
+            { fadeOut(tween(transitionDuration)) }
+        }
 
     val navGraph = remember(navController, startDestination, route, builder) {
+        NavTransitions.transitionDuration = transitionDuration
         NavTransitionGraphBuilder(
             provider = navController.navigatorProvider,
             startDestination = startDestination,
@@ -86,9 +89,9 @@ fun NavTransitionHost(
             }
             .then(modifier),
         contentAlignment = contentAlignment,
-        enterTransition = DEFAULT_ENTRY_TRANSITION,
-        exitTransition = DEFAULT_EXIT_TRANSITION,
-        popEnterTransition = DEFAULT_ENTRY_TRANSITION,
-        popExitTransition = DEFAULT_EXIT_TRANSITION
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popEnterTransition = enterTransition,
+        popExitTransition = exitTransition
     )
 }
