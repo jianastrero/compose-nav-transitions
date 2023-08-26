@@ -32,8 +32,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 
 internal object NavTransitions {
-
     var hostOffset = Offset.Zero
+    var transitionDuration by mutableStateOf(1000)
     private var _screenSharedElements: Map<String, Map<String, Rect>> by mutableStateOf(emptyMap())
 
     val screenSharedElements: Map<String, Map<String, Rect>>
