@@ -11,6 +11,62 @@ https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f
 
 ![Magic GIF](assets/magic.gif)
 
+## Installation
+
+TODO: Publish to Maven Central
+
+## Usage
+
+### Use NavTransitionHost instead of NavHost
+
+```kotlin
+NavTransitionHost(
+  navController = navController,
+  startDestination = "Home",
+  modifier = Modifier.fillMaxSize()
+) {
+    /* Rest of your code */
+}
+```
+
+### Use transitionComposable instead of composable
+
+```kotlin
+transitionComposable("home") {
+    /* Rest of your code */
+}
+```
+
+### Use sharedElement(tag) modifier for the views you want to animate
+
+```kotlin
+transitionComposable("home") {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Home",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(32.dp)
+                .sharedElement("text") // <-- Add this
+                .padding(4.dp)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.sample),
+            contentDescription = "Sample Image",
+            modifier = Modifier
+                .size(100.dp)
+                .clickable { navController.navigate("detail") }
+                .sharedElement("image") // <-- Add this
+        )
+    }
+}
+```
+
 ## Contributing to Compose Nav Transitions
 
 I love your input! I want to make contributing to this project as easy and transparent as possible, whether it's:
