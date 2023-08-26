@@ -10,7 +10,7 @@
 ![Magic GIF](assets/magic.gif)
 
 <details>
-  <summary>LICENSE (MIT)</summary>
+  <summary><h3>LICENSE (MIT)</h3></summary>
 
     MIT License
     
