@@ -10,8 +10,9 @@
 ![Magic GIF](assets/magic.gif)
 
 <details>
-  <summary>LICENSE</summary>
+  <summary>LICENSE (MIT)</summary>
     ```
+
         MIT License
         
         Copyright (c) 2023 Jian James Astrero
