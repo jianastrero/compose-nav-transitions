@@ -23,7 +23,7 @@
  *
  */
 
-package dev.jianastrero.compose_nav_transition.animation
+package dev.jianastrero.compose_nav_transition.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

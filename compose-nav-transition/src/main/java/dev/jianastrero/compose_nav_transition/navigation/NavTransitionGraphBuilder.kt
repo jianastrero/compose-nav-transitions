@@ -37,7 +37,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavigatorProvider
 import androidx.navigation.compose.composable
-import dev.jianastrero.compose_nav_transition.animation.NavTransitionContainer
+import dev.jianastrero.compose_nav_transition.component.NavTransitionContainer
 
 class NavTransitionGraphBuilder(
     provider: NavigatorProvider,
