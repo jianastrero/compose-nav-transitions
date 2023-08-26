@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionHost
-import dev.jianastrero.compose_nav_transition.navigation.navigateTransition
 import dev.jianastrero.compose_nav_transition.navigation.transitionComposable
 
 class MainActivity : ComponentActivity() {
@@ -64,7 +63,7 @@ fun MainNavGraph() {
                     contentDescription = "Sample Image",
                     modifier = Modifier
                         .size(100.dp)
-                        .clickable { navController.navigateTransition("Detail") }
+                        .clickable { navController.navigate("detail") }
                         .sharedElement("image")
                 )
             }
