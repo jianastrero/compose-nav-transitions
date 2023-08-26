@@ -1,6 +1,84 @@
+import java.io.FileInputStream
+import java.net.URI
+import java.util.*
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(FileInputStream(localPropertiesFile))
+    }
+}
+
+val ossrhUsername: String? by localProperties
+val ossrhPassword: String? by localProperties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
+    id("signing")
+}
+
+publishing {
+    repositories {
+        maven {
+            val releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+//            val snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+
+            name = "OSSRH"
+            url = URI.create(releaseRepo)
+
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("release") {
+
+            groupId = "dev.jianastrero.compose-nav-transitions"
+            artifactId = "compose-nav-transitions"
+            version = "0.1.0-alpha01"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            pom {
+                name.set("Compose Nav Transitions")
+                description.set("A Jetpack Compose Library built on top of the Jetpack Compose Navigation Library to provide easy to use transitions between screens.")
+                url.set("https://github.com/jianastrero/compose-nav-transitions/")
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://github.com/jianastrero/compose-nav-transitions/blob/main/LICENSE")
+                        distribution.set("repo")
+                    }
+                }
+
+                scm {
+                    url.set("https://github.com/jianastrero/compose-nav-transitions/")
+                    connection.set("scm:git@github.com:jianastrero/compose-nav-transitions.git")
+                    developerConnection.set("scm:git@github.com:jianastrero/compose-nav-transitions.git")
+                }
+
+                developers {
+                    developer {
+                        id.set("jianastrero")
+                        name.set("Jian James Astrero")
+                        email.set("jianjamesastrero@gmail.com")
+                        organizationUrl.set("https://jianastrero.dev/")
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["release"])
 }
 
 android {
@@ -32,6 +110,13 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
