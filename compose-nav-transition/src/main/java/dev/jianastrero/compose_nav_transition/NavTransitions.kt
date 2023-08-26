@@ -7,8 +7,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 
 internal object NavTransitions {
+
     var hostOffset = Offset.Zero
-    var lastRoute: String by mutableStateOf("")
     private var _screenSharedElements: Map<String, Map<String, Rect>> by mutableStateOf(emptyMap())
 
     val screenSharedElements: Map<String, Map<String, Rect>>
