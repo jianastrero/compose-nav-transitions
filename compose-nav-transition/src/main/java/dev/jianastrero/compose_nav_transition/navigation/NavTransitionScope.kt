@@ -38,16 +38,20 @@ class NavTransitionScope(
     internal val route: String
 ) {
     internal var previousRoute: String by mutableStateOf("")
+    internal var tagsSet: Set<String> by mutableStateOf(emptySet())
 
     fun Modifier.sharedElement(tag: String): Modifier = onGloballyPositioned {
-        val rect = with(it.positionInRoot()) {
-            Rect(
-                left = x,
-                top = y,
-                right = (x + it.size.width),
-                bottom = (y + it.size.height)
-            )
+        if (tagsSet.isEmpty() || !tagsSet.contains(tag)) {
+            tagsSet = tagsSet + tag
+            val rect = with(it.positionInRoot()) {
+                Rect(
+                    left = x,
+                    top = y,
+                    right = (x + it.size.width),
+                    bottom = (y + it.size.height)
+                )
+            }
+            NavTransitions.addSharedElement(route, tag to rect)
         }
-        NavTransitions.addSharedElement(route, tag to rect)
     }
 }
