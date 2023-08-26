@@ -71,35 +71,46 @@ private fun NavTransitionScope.TransitionAnimations() {
     val density = LocalDensity.current
 
     var animate by remember { mutableStateOf(false) }
+    var animateVisibility by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
-    val tags by remember {
+    val rects by remember(route, previousRoute, NavTransitions.screenSharedElements) {
         derivedStateOf {
-            NavTransitions.keysFor(route, previousRoute)
+            NavTransitions.keysFor(route, previousRoute).map {
+                val startRect = NavTransitions.screenSharedElements[previousRoute]
+                    ?.get(it)
+                    ?.toDpRect(density)
+                    ?: DpRect.Zero
+                val endRect = NavTransitions.screenSharedElements[route]
+                    ?.get(it)
+                    ?.toDpRect(density)
+                    ?: startRect
+                startRect to endRect
+            }
         }
     }
 
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "all animations",
-        animationSpec = tween(600),
-        finishedListener = { visible = false }
+        animationSpec = tween(NavTransitions.transitionDuration*3),
+        finishedListener = {
+            visible = false
+            animateVisibility = true
+        }
+    )
+    val visibilityProgress by animateFloatAsState(
+        targetValue = if (animateVisibility) 0f else 1f,
+        label = "visibility animation",
+        animationSpec = tween(NavTransitions.transitionDuration)
     )
 
     Box(
         modifier = Modifier
-            .alpha(if (visible) 1f else 0f)
+            .alpha(if (visible) 1f else visibilityProgress)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        tags.forEach {
-            val startRect = NavTransitions.screenSharedElements[previousRoute]
-                ?.get(it)
-                ?.toDpRect(density)
-                ?: DpRect.Zero
-            val endRect = NavTransitions.screenSharedElements[route]
-                ?.get(it)
-                ?.toDpRect(density)
-                ?: startRect
+        rects.forEach { (startRect, endRect) ->
             val rect = startRect.lerp(endRect, animationProgress)
             Spacer(
                 modifier = Modifier
