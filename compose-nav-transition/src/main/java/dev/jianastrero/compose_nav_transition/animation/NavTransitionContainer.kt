@@ -42,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -70,6 +71,7 @@ private fun NavTransitionScope.TransitionAnimations() {
     val density = LocalDensity.current
 
     var animate by remember { mutableStateOf(false) }
+    var visible by remember { mutableStateOf(false) }
     val tags by remember {
         derivedStateOf {
             NavTransitions.keysFor(route, previousRoute)
@@ -79,19 +81,15 @@ private fun NavTransitionScope.TransitionAnimations() {
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "all animations",
-        animationSpec = tween(600)
+        animationSpec = tween(600),
+        finishedListener = { visible = false }
     )
-
-    val isAnimating by remember {
-        derivedStateOf {
-            animate || animationProgress < 1f
-        }
-    }
 
     Box(
         modifier = Modifier
+            .alpha(if (visible) 1f else 0f)
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         tags.forEach {
             val startRect = NavTransitions.screenSharedElements[previousRoute]
@@ -107,14 +105,15 @@ private fun NavTransitionScope.TransitionAnimations() {
                 modifier = Modifier
                     .offset(rect.left, rect.top)
                     .size(rect.width, rect.height)
-                    .background(Color.Red.copy(alpha = 0.5f))
+                    .background(Color.LightGray)
             )
         }
     }
 
     LaunchedEffect(route, previousRoute) {
-        if (isAnimating) {
+        if (!animate) {
             animate = true
+            visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
         }
     }
 }
