@@ -47,10 +47,10 @@ import dev.jianastrero.compose_nav_transition.NavTransitions
 
 
 private val DEFAULT_ENTRY_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
-    { fadeIn(animationSpec = tween(0)) }
+    { fadeIn(animationSpec = tween(200)) }
 
 private val DEFAULT_EXIT_TRANSITION: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
-    { fadeOut(animationSpec = tween(0)) }
+    { fadeOut(animationSpec = tween(200)) }
 
 
 @Composable
