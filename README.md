@@ -9,6 +9,50 @@
 
 ![Magic GIF](assets/magic.gif)
 
+## Contributing to Compose Nav Transitions
+
+I love your input! I want to make contributing to this project as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
+- Or even just giving feedback
+
+### How to contribute
+
+To contribute to Compose Nav Transitions, follow these steps:
+
+1. Fork this repository.
+2. Create a branch: `git checkout -b <branch_name>`.
+3. Make your changes and commit them: `git commit -m '<commit_message>'`
+4. Push to the original branch: `git push origin ComposeNavTransitions/main`
+5. Create the pull request. 
+
+_Alternatively see the GitHub documentation on [creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)._
+
+### Any contributions you make will be under the MIT Software License
+
+In short, when you submit code changes, your submissions are understood to be under the same [**MIT License**](https://choosealicense.com/licenses/mit/)
+
+### Write bug reports with detail, background, and sample code
+
+Great Bug Reports tend to have:
+
+- A quick summary and/or background
+- Video (if possible) showing the problem
+- Steps to reproduce
+  - Be specific!
+  - Give sample code if you can.
+- What you expected would happen
+- What actually happens
+- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
+
+### License
+
+By contributing, you agree that your contributions will be licensed under its [**MIT License**](LICENSE).
+
 <details>
   <summary><h3>LICENSE (MIT)</h3></summary>
 
