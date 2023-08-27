@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionHost
+import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 import dev.jianastrero.compose_nav_transition.navigation.transitionComposable
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainNavGraph() {
+private fun MainNavGraph() {
     val navController = rememberNavController()
     NavTransitionHost(
         navController = navController,
@@ -44,49 +45,64 @@ fun MainNavGraph() {
         modifier = Modifier.fillMaxSize()
     ) {
         transitionComposable("home") {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = "Home",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(32.dp)
-                        .sharedElement("text")
-                        .padding(4.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.sample),
-                    contentDescription = "Sample Image",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clickable { navController.navigate("detail") }
-                        .sharedElement("image")
-                )
-            }
+            HomeScreen(navigate = navController::navigate, modifier = Modifier.fillMaxSize())
         }
         transitionComposable("detail") {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = "Detail",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.sharedElement("text")
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.sample),
-                    contentDescription = "Sample Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(240.dp)
-                        .sharedElement("image")
-                )
-            }
+            DetailScreen(modifier = Modifier.fillMaxSize())
         }
+    }
+}
+
+@Composable
+private fun NavTransitionScope.HomeScreen(
+    navigate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
+        Text(
+            text = "Home",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(32.dp)
+                .sharedElement("text")
+                .padding(4.dp)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.sample),
+            contentDescription = "Sample Image",
+            modifier = Modifier
+                .size(100.dp)
+                .clickable { navigate("detail") }
+                .sharedElement("image")
+        )
+    }
+}
+
+@Composable
+private fun NavTransitionScope.DetailScreen(
+    modifier: Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Detail",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.sharedElement("text")
+        )
+        Image(
+            painter = painterResource(id = R.drawable.sample),
+            contentDescription = "Sample Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp)
+                .sharedElement("image")
+        )
     }
 }
 
