@@ -33,6 +33,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import dev.jianastrero.compose_nav_transition.NavTransitions
+import dev.jianastrero.compose_nav_transition.element.Element
 
 class NavTransitionScope(
     internal val route: String
@@ -40,7 +41,10 @@ class NavTransitionScope(
     internal var previousRoute: String by mutableStateOf("")
     internal var tagsSet: Set<String> by mutableStateOf(emptySet())
 
-    fun Modifier.sharedElement(tag: String): Modifier = onGloballyPositioned {
+    fun Modifier.sharedElement(
+        tag: String,
+        element: Element? = null
+    ): Modifier = onGloballyPositioned {
         if (tagsSet.isEmpty() || !tagsSet.contains(tag)) {
             tagsSet = tagsSet + tag
             val rect = with(it.positionInRoot()) {
@@ -51,7 +55,7 @@ class NavTransitionScope(
                     bottom = (y + it.size.height)
                 )
             }
-            NavTransitions.addSharedElement(route, tag to rect)
+            NavTransitions.addSharedElement(route, tag to (rect to element))
         }
     }
 }
