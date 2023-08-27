@@ -64,7 +64,7 @@ class TextElement(
     internal val textAlign: TextAlign? = null,
     internal val lineHeight: TextUnit = TextUnit.Unspecified,
     internal val overflow: TextOverflow = TextOverflow.Clip,
-    internal val softWrap: Boolean = false,
+    internal val softWrap: Boolean = true,
     internal val maxLines: Int = Int.MAX_VALUE,
     internal val onTextLayout: (TextLayoutResult) -> Unit = {},
     internal val style: TextStyle = TextStyle.Default
