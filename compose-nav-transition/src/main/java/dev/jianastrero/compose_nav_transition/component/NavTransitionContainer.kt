@@ -73,18 +73,16 @@ private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
     var animateVisibility by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
-    val rects by remember(route, previousRoute, NavTransitions.screenSharedElements) {
+    val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
         derivedStateOf {
             NavTransitions.keysFor(route, previousRoute).map {
-                val startRect = NavTransitions.screenSharedElements[previousRoute]
+                val start = NavTransitions.screenSharedElements[previousRoute]
                     ?.get(it)
-                    ?.toDpRect(density)
-                    ?: DpRect.Zero
-                val endRect = NavTransitions.screenSharedElements[route]
+                val end = NavTransitions.screenSharedElements[route]
                     ?.get(it)
-                    ?.toDpRect(density)
-                    ?: startRect
-                startRect to endRect
+                val startRect = start?.first?.toDpRect(density) ?: DpRect.Zero
+                val endRect = end?.first?.toDpRect(density) ?: DpRect.Zero
+                (startRect to start?.second) to (endRect to end?.second)
             }
         }
     }
@@ -110,14 +108,22 @@ private fun NavTransitionScope.TransitionAnimations() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        rects.forEach { (startRect, endRect) ->
-            val rect = startRect.lerp(endRect, animationProgress)
-            Spacer(
+        elements.forEach { (start, end) ->
+            val rect = start.first.lerp(end.first, animationProgress)
+            Box(
                 modifier = Modifier
                     .offset(rect.left, rect.top)
                     .size(rect.width, rect.height)
-                    .background(Color.LightGray)
-            )
+            ) {
+                when (val element = end.second) {
+                    null -> Spacer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
+                    else -> element.Composable()
+                }
+            }
         }
     }
 
