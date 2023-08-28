@@ -71,7 +71,7 @@ private fun NavTransitionScope.TransitionAnimations() {
     val density = LocalDensity.current
 
     var animate by remember { mutableStateOf(false) }
-    var animateVisibility by remember { mutableStateOf(false) }
+    var backdropVisible by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
     val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
         derivedStateOf {
@@ -93,22 +93,13 @@ private fun NavTransitionScope.TransitionAnimations() {
         animationSpec = tween(NavTransitions.transitionDuration),
         finishedListener = {
             visible = false
+            backdropVisible = false
         }
     )
-    val visibilityProgress by animateFloatAsState(
-        targetValue = if (animateVisibility) 0f else 1f,
-        label = "visibility animation",
-        animationSpec = tween(durationMillis = NavTransitions.transitionDuration)
-    )
 
-    if (visibilityProgress > 0f || visible) {
+    if (backdropVisible && visible) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Spacer(
-                modifier = Modifier
-                    .alpha(visibilityProgress)
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            )
+            Backdrop(backdropVisible = backdropVisible)
             elements.forEach { (start, end) ->
                 val rect = start.first.lerp(end.first, animationProgress)
                 Box(
@@ -133,9 +124,25 @@ private fun NavTransitionScope.TransitionAnimations() {
         if (!animate) {
             animate = true
             visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
-            animateVisibility = true
+            backdropVisible = true
         }
     }
+}
+
+@Composable
+private fun Backdrop(backdropVisible: Boolean) {
+    val visibilityProgress by animateFloatAsState(
+        targetValue = if (backdropVisible) 0f else 1f,
+        label = "backdrop animation",
+        animationSpec = tween(durationMillis = NavTransitions.transitionDuration)
+    )
+
+    Spacer(
+        modifier = Modifier
+            .alpha(visibilityProgress)
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    )
 }
 
 private fun Dp.lerp(other: Dp, percent: Float): Dp = (this + ((other - this) * percent))
