@@ -25,8 +25,12 @@
 
 package dev.jianastrero.compose_nav_transition.example.nav_graph
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import dev.jianastrero.compose_nav_transition.example.screens.MainScreen
+import dev.jianastrero.compose_nav_transition.example.screens.NotificationDetailScreen
 import dev.jianastrero.compose_nav_transition.example.screens.NotificationScreen
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionGraphBuilder
 import dev.jianastrero.compose_nav_transition.navigation.transitionComposable
@@ -47,6 +51,22 @@ fun NavTransitionGraphBuilder.MainNavGraph(
             navigate = navigate,
             back = back,
             modifier = modifier
+        )
+    }
+    transitionComposable(
+        "notification_detail/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        val id = it.arguments?.getInt("id") ?: 0
+
+        NotificationDetailScreen(
+            id = id,
+            back = back,
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
