@@ -27,9 +27,12 @@ package dev.jianastrero.compose_nav_transition.element
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -108,16 +111,18 @@ class ImageElement(
     }
 }
 
-class ImageVectorElement(
+class IconElement(
     internal val imageVector: ImageVector,
     modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
+    internal val tint: Color = Color.Black
 ) : Element(modifier) {
     @Composable
     override fun Composable() {
-        Image(
+        Icon(
             imageVector = imageVector,
             contentDescription = contentDescription,
+            tint = tint,
             modifier = modifier
         )
     }
