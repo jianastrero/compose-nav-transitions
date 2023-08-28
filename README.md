@@ -25,11 +25,10 @@ implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:
 ```
 
 <details>
-
     <summary><h3>Version Guide</h3></summary>
 
 | Compose Nav Transitions | Navigation Compose | Demo                                             |
-  |-------------------------|--------------------|--------------------------------------------------|
+|-------------------------|--------------------|--------------------------------------------------|
 | 0.2.0-alpha01           | 2.7.1              | ![v0.2.0-alpha01.gif](assets/v0.2.0-alpha01.gif) |
 | 0.1.0-alpha01           | 2.7.1              | ![v0.1.0-alpha01.gif](assets/v0.1.0-alpha01.gif) |
 
