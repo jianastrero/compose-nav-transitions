@@ -28,7 +28,7 @@ package dev.jianastrero.compose_nav_transition.component
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
+import androidx.compose.ui.zIndex
 import dev.jianastrero.compose_nav_transition.NavTransitions
 import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
@@ -71,7 +73,6 @@ fun NavTransitionScope.NavTransitionContainer(
 @Composable
 private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
-    var backdropVisible by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
     val elements = rememberElements()
 
@@ -81,13 +82,16 @@ private fun NavTransitionScope.TransitionAnimations() {
         animationSpec = tween(NavTransitions.transitionDuration),
         finishedListener = {
             visible = false
-            backdropVisible = false
         }
     )
 
-    if (backdropVisible && visible) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Backdrop(backdropVisible = backdropVisible)
+    if (visible) {
+        Box(
+            modifier = Modifier
+                .zIndex(Float.MAX_VALUE)
+                .fillMaxSize()
+        ) {
+            Backdrop()
             elements.forEach { element ->
                 element.Element(animationProgress)
             }
@@ -98,7 +102,6 @@ private fun NavTransitionScope.TransitionAnimations() {
         if (!animate) {
             animate = true
             visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
-            backdropVisible = true
         }
     }
 }
@@ -125,20 +128,34 @@ private fun NavTransitionScope.rememberElements(): Collection<Pair<Pair<DpRect, 
 }
 
 @Composable
-private fun Backdrop(backdropVisible: Boolean) {
-    val visibilityProgress by animateFloatAsState(
-        targetValue = if (backdropVisible) 0f else 1f,
+private fun Backdrop() {
+    var backdropVisible by remember { mutableStateOf(true) }
+
+    val backdropVisibilityProgress by animateFloatAsState(
+        targetValue = if (backdropVisible) 1f else 0f,
         label = "backdrop animation",
         animationSpec = tween(durationMillis = NavTransitions.transitionDuration)
     )
 
     Spacer(
         modifier = Modifier
-            .alpha(visibilityProgress)
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        tryAwaitRelease()
+                    }
+                )
+            }
+            .alpha(backdropVisibilityProgress)
             .background(MaterialTheme.colorScheme.background)
-            .clickable(enabled = true, onClick = {})
     )
+
+    LaunchedEffect(Unit) {
+        if (backdropVisible) {
+            backdropVisible = false
+        }
+    }
 }
 
 @Composable
