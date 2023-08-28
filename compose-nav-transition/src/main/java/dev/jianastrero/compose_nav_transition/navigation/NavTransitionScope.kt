@@ -58,4 +58,8 @@ class NavTransitionScope(
             NavTransitions.addSharedElement(route, tag to (rect to element))
         }
     }
+
+    companion object {
+        val Preview = NavTransitionScope("")
+    }
 }
