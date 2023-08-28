@@ -86,6 +86,37 @@ transitionComposable("home") {
 }
 ```
 
+#### - OR -
+
+```kotlin
+@Composable
+fun NavTransitionScope.MyScreen() { // <-- Add NavTransitionScope to be able to use sharedElement
+  Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
+    modifier = Modifier.fillMaxSize()
+  ) {
+    Text(
+      text = "Home",
+      fontSize = 24.sp,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier
+        .padding(32.dp)
+        .sharedElement("text") // <-- Add this
+        .padding(4.dp)
+    )
+    Image(
+      painter = painterResource(id = R.drawable.sample),
+      contentDescription = "Sample Image",
+      modifier = Modifier
+        .size(100.dp)
+        .clickable { navController.navigate("detail") }
+        .sharedElement("image") // <-- Add this
+    )
+  }
+}
+```
+
 ## Contributing to Compose Nav Transitions
 
 I love your input! I want to make contributing to this project as easy and transparent as possible, whether it's:
