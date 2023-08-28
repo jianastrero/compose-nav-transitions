@@ -109,8 +109,8 @@ class ImageElement(
 }
 
 class ImageVectorElement(
-    modifier: Modifier = Modifier,
     internal val imageVector: ImageVector,
+    modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
 ) : Element(modifier) {
     @Composable
