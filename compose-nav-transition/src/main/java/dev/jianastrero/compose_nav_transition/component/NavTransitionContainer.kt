@@ -107,19 +107,19 @@ private fun NavTransitionScope.TransitionAnimations() {
 }
 
 @Composable
-private fun NavTransitionScope.rememberElements(): Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> {
+private fun NavTransitionScope.rememberElements(): Map<String, Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> {
     val density = LocalDensity.current
 
     val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
         derivedStateOf {
-            NavTransitions.keysFor(route, previousRoute).map {
+            NavTransitions.keysFor(route, previousRoute).associateWith {
                 val start = NavTransitions.screenSharedElements[previousRoute]
                     ?.get(it)
                 val end = NavTransitions.screenSharedElements[route]
                     ?.get(it)
                 val startRect = start?.first?.toDpRect(density) ?: DpRect.Zero
                 val endRect = end?.first?.toDpRect(density) ?: DpRect.Zero
-                (startRect to start?.second) to (endRect to end?.second)
+                ((startRect to start?.second) to (endRect to end?.second))
             }
         }
     }
@@ -159,9 +159,11 @@ private fun Backdrop() {
 }
 
 @Composable
-private fun Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>.Element(animationProgress: Float) {
-    val (start, end) = this
+private fun Map.Entry<String, Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>>.Element(animationProgress: Float) {
+    val (tag, item) = this
+    val (start, end) = item
     val rect = start.first.lerp(end.first, animationProgress)
+
     Box(
         modifier = Modifier
             .offset(rect.left, rect.top)
@@ -175,6 +177,10 @@ private fun Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>.Element(animati
             )
             else -> element.Composable()
         }
+    }
+
+    LaunchedEffect(animationProgress) {
+
     }
 }
 
