@@ -41,8 +41,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.jianastrero.compose_nav_transition.element.IconElement
 import dev.jianastrero.compose_nav_transition.element.ImageElement
-import dev.jianastrero.compose_nav_transition.element.ImageVectorElement
 import dev.jianastrero.compose_nav_transition.element.TextElement
 
 
@@ -53,15 +53,19 @@ object NotificationSharedElements  {
     const val TAG_ITEM_TEXT = "notification_item_text"
     const val TAG_ITEM_DESCRIPTION = "notification_item_description"
 
-    val notificationIconElement = ImageVectorElement(
+    @Composable
+    fun notificationIconElement(tint: Color) = IconElement(
         imageVector = Icons.Outlined.Notifications,
+        tint = tint,
         modifier = Modifier
             .size(56.dp)
             .padding(16.dp)
     )
 
-    val closeIconElement = ImageVectorElement(
+    @Composable
+    fun closeIconElement(tint: Color) = IconElement(
         imageVector = Icons.Outlined.Close,
+        tint = tint,
         modifier = Modifier
             .size(56.dp)
             .padding(16.dp)
