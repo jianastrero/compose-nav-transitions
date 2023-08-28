@@ -30,10 +30,10 @@ implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:
 
 ### Version Guide
 
-| Compose Nav Transitions | Navigation Compose |
-|-------------------------|--------------------|
-| 0.2.0-alpha01           | 2.7.1              |
-| 0.1.0-alpha01           | 2.7.1              |
+| Compose Nav Transitions | Navigation Compose | Demo                                                                                                       |
+|-------------------------|--------------------|------------------------------------------------------------------------------------------------------------|
+| 0.2.0-alpha01           | 2.7.1              | https://github.com/jianastrero/compose-nav-transitions/assets/7688625/067a78b5-a996-4afa-91c1-8d6e7c20da61 |
+| 0.1.0-alpha01           | 2.7.1              | https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f55f-4022-8402-e46369b893bb |
 
 ## Usage
 
