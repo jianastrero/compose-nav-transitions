@@ -107,8 +107,7 @@ private fun NavTransitionScope.TransitionAnimations() {
 private fun NavTransitionScope.rememberElements(): Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> {
     val density = LocalDensity.current
 
-    val elements by remember(route, previousRoute,
-        NavTransitions.screenSharedElements) {
+    val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
         derivedStateOf {
             NavTransitions.keysFor(route, previousRoute).map {
                 val start = NavTransitions.screenSharedElements[previousRoute]
