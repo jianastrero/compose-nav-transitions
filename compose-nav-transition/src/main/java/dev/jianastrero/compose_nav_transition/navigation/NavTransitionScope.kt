@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -40,6 +41,7 @@ class NavTransitionScope(
 ) {
     internal var previousRoute: String by mutableStateOf("")
     internal var tagsSet: Set<String> by mutableStateOf(emptySet())
+    internal var alphaMap: Map<String, Float> by mutableStateOf(emptyMap())
 
     fun Modifier.sharedElement(
         tag: String,
@@ -57,7 +59,7 @@ class NavTransitionScope(
             }
             NavTransitions.addSharedElement(route, tag to (rect to element))
         }
-    }
+    }.alpha(alphaMap[tag] ?: 1f)
 
     companion object {
         val Preview = NavTransitionScope("")
