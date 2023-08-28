@@ -27,6 +27,7 @@ package dev.jianastrero.compose_nav_transition.example.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -57,15 +58,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jianastrero.compose_nav_transition.element.ImageVectorElement
 import dev.jianastrero.compose_nav_transition.example.R
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavTransitionScope.MainScreen(modifier: Modifier = Modifier) {
+fun NavTransitionScope.MainScreen(
+    navigate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         topBar = {
             Header(
+                navigate = navigate,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -96,7 +102,10 @@ fun NavTransitionScope.MainScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun NavTransitionScope.Header(modifier: Modifier = Modifier) {
+private fun NavTransitionScope.Header(
+    navigate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Surface(
         shadowElevation = 4.dp,
         modifier = modifier
@@ -115,9 +124,19 @@ private fun NavTransitionScope.Header(modifier: Modifier = Modifier) {
                 contentDescription = "Notifications",
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .sharedElement("notifications icon")
+                    .sharedElement(
+                        "notifications icon",
+                        element = ImageVectorElement(
+                            Icons.Outlined.Notifications,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(56.dp)
+                                .padding(16.dp)
+                        )
+                    )
                     .clip(CircleShape)
                     .size(56.dp)
+                    .clickable { navigate("notifications") }
                     .padding(16.dp)
             )
         }
@@ -167,5 +186,5 @@ private fun NavTransitionScope.Item(
 @Preview
 @Composable
 private fun MainScreenPreview() {
-    NavTransitionScope.Preview.MainScreen()
+    NavTransitionScope.Preview.MainScreen(navigate = {})
 }
