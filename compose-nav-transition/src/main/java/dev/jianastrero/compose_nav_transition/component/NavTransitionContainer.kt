@@ -90,38 +90,40 @@ private fun NavTransitionScope.TransitionAnimations() {
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "all animations",
-        animationSpec = tween(NavTransitions.transitionDuration*3),
+        animationSpec = tween(NavTransitions.transitionDuration),
         finishedListener = {
             visible = false
-            animateVisibility = true
         }
     )
     val visibilityProgress by animateFloatAsState(
         targetValue = if (animateVisibility) 0f else 1f,
         label = "visibility animation",
-        animationSpec = tween(NavTransitions.transitionDuration)
+        animationSpec = tween(durationMillis = NavTransitions.transitionDuration)
     )
 
-    Box(
-        modifier = Modifier
-            .alpha(if (visible) 1f else visibilityProgress)
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        elements.forEach { (start, end) ->
-            val rect = start.first.lerp(end.first, animationProgress)
-            Box(
+    if (visibilityProgress > 0f || visible) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Spacer(
                 modifier = Modifier
-                    .offset(rect.left, rect.top)
-                    .size(rect.width, rect.height)
-            ) {
-                when (val element = end.second) {
-                    null -> Spacer(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.LightGray)
-                    )
-                    else -> element.Composable()
+                    .alpha(visibilityProgress)
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            )
+            elements.forEach { (start, end) ->
+                val rect = start.first.lerp(end.first, animationProgress)
+                Box(
+                    modifier = Modifier
+                        .offset(rect.left, rect.top)
+                        .size(rect.width, rect.height)
+                ) {
+                    when (val element = end.second) {
+                        null -> Spacer(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.LightGray)
+                        )
+                        else -> element.Composable()
+                    }
                 }
             }
         }
@@ -131,6 +133,7 @@ private fun NavTransitionScope.TransitionAnimations() {
         if (!animate) {
             animate = true
             visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
+            animateVisibility = true
         }
     }
 }
