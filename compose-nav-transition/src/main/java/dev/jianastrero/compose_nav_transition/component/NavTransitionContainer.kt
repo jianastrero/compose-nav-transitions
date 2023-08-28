@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
 import dev.jianastrero.compose_nav_transition.NavTransitions
+import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @Composable
@@ -74,7 +75,8 @@ private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
     var backdropVisible by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
-    val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
+    val elements: Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> by remember(route, previousRoute,
+        NavTransitions.screenSharedElements) {
         derivedStateOf {
             NavTransitions.keysFor(route, previousRoute).map {
                 val start = NavTransitions.screenSharedElements[previousRoute]
@@ -101,22 +103,8 @@ private fun NavTransitionScope.TransitionAnimations() {
     if (backdropVisible && visible) {
         Box(modifier = Modifier.fillMaxSize()) {
             Backdrop(backdropVisible = backdropVisible)
-            elements.forEach { (start, end) ->
-                val rect = start.first.lerp(end.first, animationProgress)
-                Box(
-                    modifier = Modifier
-                        .offset(rect.left, rect.top)
-                        .size(rect.width, rect.height)
-                ) {
-                    when (val element = end.second) {
-                        null -> Spacer(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.LightGray)
-                        )
-                        else -> element.Composable()
-                    }
-                }
+            elements.forEach { element ->
+                element.Element(animationProgress)
             }
         }
     }
@@ -145,6 +133,26 @@ private fun Backdrop(backdropVisible: Boolean) {
             .background(MaterialTheme.colorScheme.background)
             .clickable(enabled = true, onClick = {})
     )
+}
+
+@Composable
+private fun Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>.Element(animationProgress: Float) {
+    val (start, end) = this
+    val rect = start.first.lerp(end.first, animationProgress)
+    Box(
+        modifier = Modifier
+            .offset(rect.left, rect.top)
+            .size(rect.width, rect.height)
+    ) {
+        when (val element = end.second) {
+            null -> Spacer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
+            else -> element.Composable()
+        }
+    }
 }
 
 private fun Dp.lerp(other: Dp, percent: Float): Dp = (this + ((other - this) * percent))
