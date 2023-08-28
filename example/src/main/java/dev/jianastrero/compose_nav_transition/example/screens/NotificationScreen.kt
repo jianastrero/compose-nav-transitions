@@ -27,6 +27,7 @@ package dev.jianastrero.compose_nav_transition.example.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +55,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jianastrero.compose_nav_transition.element.ImageVectorElement
@@ -82,6 +85,7 @@ fun NavTransitionScope.NotificationScreen(
                     message = "($it) ${Constants.DUMMY_TEXT}",
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     modifier = Modifier.fillMaxWidth()
+                        .clickable { navigate("notification_detail/$it") }
                 )
             }
         }
@@ -102,7 +106,7 @@ private fun NavTransitionScope.Header(
                 .align(Alignment.Center)
                 .fillMaxWidth()
         )
-        Image(
+        Icon(
             imageVector = Icons.Outlined.Notifications,
             contentDescription = "Notifications",
             modifier = Modifier
@@ -121,12 +125,12 @@ private fun NavTransitionScope.Header(
                 .size(56.dp)
                 .padding(16.dp)
         )
-        Image(
+        Icon(
             imageVector = Icons.Outlined.Close,
             contentDescription = "Close",
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .sharedElement("notifications icon")
+                .sharedElement("close")
                 .clip(CircleShape)
                 .size(56.dp)
                 .clickable(onClick = back)
@@ -143,13 +147,13 @@ private fun NotificationItem(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Row(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painter = painter,
                 contentDescription = "Notification Item",
                 modifier = Modifier
                     .size(32.dp)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .border(1.dp, Color.LightGray)
             )
             Column(
                 modifier = Modifier
@@ -164,6 +168,7 @@ private fun NotificationItem(
                 Text(
                     text = message,
                     maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.fillMaxWidth()
                 )
