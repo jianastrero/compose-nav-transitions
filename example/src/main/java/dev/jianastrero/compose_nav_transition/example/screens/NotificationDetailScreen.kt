@@ -121,7 +121,7 @@ fun NavTransitionScope.NotificationDetailScreen(
                 .align(Alignment.TopEnd)
                 .sharedElement(
                     tag = NotificationSharedElements.TAG_ICON_CLOSE,
-                    element = NotificationSharedElements.closeIconElement
+                    element = NotificationSharedElements.closeIconElement(tint = Color.White)
                 )
                 .clip(CircleShape)
                 .size(56.dp)
