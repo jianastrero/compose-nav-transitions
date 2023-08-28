@@ -14,12 +14,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+
             NavTransitionHost(
                 navController = navController,
                 startDestination = "Home",
                 modifier = Modifier.fillMaxSize()
             ) {
-                MainNavGraph()
+                MainNavGraph(
+                    navigate = navController::navigate,
+                    back = navController::popBackStack,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
