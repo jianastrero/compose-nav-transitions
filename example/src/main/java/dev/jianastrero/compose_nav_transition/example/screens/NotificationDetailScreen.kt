@@ -119,13 +119,13 @@ fun NavTransitionScope.NotificationDetailScreen(
             tint = Color.White,
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .clip(CircleShape)
+                .clickable(onClick = back)
                 .sharedElement(
                     tag = NotificationSharedElements.TAG_ICON_CLOSE,
                     element = NotificationSharedElements.closeIconElement(tint = Color.White)
                 )
-                .clip(CircleShape)
                 .size(56.dp)
-                .clickable(onClick = back)
                 .padding(16.dp)
         )
     }
