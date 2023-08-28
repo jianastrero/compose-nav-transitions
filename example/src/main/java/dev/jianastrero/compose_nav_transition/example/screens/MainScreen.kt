@@ -59,8 +59,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jianastrero.compose_nav_transition.element.ImageVectorElement
 import dev.jianastrero.compose_nav_transition.example.R
+import dev.jianastrero.compose_nav_transition.example.shared_elements.NotificationSharedElements
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,14 +127,8 @@ private fun NavTransitionScope.Header(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .sharedElement(
-                        "notifications icon",
-                        element = ImageVectorElement(
-                            Icons.Outlined.Notifications,
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(56.dp)
-                                .padding(16.dp)
-                        )
+                        tag = NotificationSharedElements.TAG_ICON,
+                        element = NotificationSharedElements.notificationIconElement
                     )
                     .clip(CircleShape)
                     .size(56.dp)
