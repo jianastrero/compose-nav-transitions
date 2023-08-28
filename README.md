@@ -21,8 +21,19 @@ https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f
 ## Installation
 
 ```kotlin
-implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:0.1.0-alpha01")
+// This library is built on top of Navigation Compose Library, You need to add it to your project first
+// https://developer.android.com/jetpack/compose/navigation
+implementation("androidx.navigation:navigation-compose:2.7.1")
+
+implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:0.2.0-alpha01")
 ```
+
+### Version Guide
+
+| Compose Nav Transitions | Navigation Compose |
+|-------------------------|--------------------|
+| 0.2.0-alpha01           | 2.7.1              |
+| 0.1.0-alpha01           | 2.7.1              |
 
 ## Usage
 
