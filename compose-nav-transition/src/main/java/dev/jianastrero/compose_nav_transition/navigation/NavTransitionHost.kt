@@ -53,7 +53,7 @@ fun NavTransitionHost(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
     route: String? = null,
-    transitionDuration: Int = 200,
+    transitionDuration: Int = 600,
     builder: NavTransitionGraphBuilder.() -> Unit
 ) {
     var currentScope: NavTransitionScope? by remember { mutableStateOf(null) }
