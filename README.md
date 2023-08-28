@@ -1,4 +1,6 @@
-# 🪄 _(WIP)_ Compose Nav Transitions
+![Compose Nav Transition Icon](assets/compose-nav-transitions.png)
+
+# Compose Nav Transitions
 
 ###### A Jetpack Compose Library built on top of the Jetpack Compose Navigation Library to provide easy to use transitions between screens.
 
