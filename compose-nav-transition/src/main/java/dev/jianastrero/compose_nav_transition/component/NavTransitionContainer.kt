@@ -70,25 +70,10 @@ fun NavTransitionScope.NavTransitionContainer(
 
 @Composable
 private fun NavTransitionScope.TransitionAnimations() {
-    val density = LocalDensity.current
-
     var animate by remember { mutableStateOf(false) }
     var backdropVisible by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
-    val elements: Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> by remember(route, previousRoute,
-        NavTransitions.screenSharedElements) {
-        derivedStateOf {
-            NavTransitions.keysFor(route, previousRoute).map {
-                val start = NavTransitions.screenSharedElements[previousRoute]
-                    ?.get(it)
-                val end = NavTransitions.screenSharedElements[route]
-                    ?.get(it)
-                val startRect = start?.first?.toDpRect(density) ?: DpRect.Zero
-                val endRect = end?.first?.toDpRect(density) ?: DpRect.Zero
-                (startRect to start?.second) to (endRect to end?.second)
-            }
-        }
-    }
+    val elements = rememberElements()
 
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
@@ -116,6 +101,28 @@ private fun NavTransitionScope.TransitionAnimations() {
             backdropVisible = true
         }
     }
+}
+
+@Composable
+private fun NavTransitionScope.rememberElements(): Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> {
+    val density = LocalDensity.current
+
+    val elements by remember(route, previousRoute,
+        NavTransitions.screenSharedElements) {
+        derivedStateOf {
+            NavTransitions.keysFor(route, previousRoute).map {
+                val start = NavTransitions.screenSharedElements[previousRoute]
+                    ?.get(it)
+                val end = NavTransitions.screenSharedElements[route]
+                    ?.get(it)
+                val startRect = start?.first?.toDpRect(density) ?: DpRect.Zero
+                val endRect = end?.first?.toDpRect(density) ?: DpRect.Zero
+                (startRect to start?.second) to (endRect to end?.second)
+            }
+        }
+    }
+
+    return elements
 }
 
 @Composable
