@@ -128,7 +128,7 @@ private fun NavTransitionScope.Header(
                     .align(Alignment.CenterEnd)
                     .sharedElement(
                         tag = NotificationSharedElements.TAG_ICON,
-                        element = NotificationSharedElements.notificationIconElement
+                        element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                     )
                     .clip(CircleShape)
                     .size(56.dp)
