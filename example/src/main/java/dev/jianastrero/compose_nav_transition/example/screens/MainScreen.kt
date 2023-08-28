@@ -126,13 +126,13 @@ private fun NavTransitionScope.Header(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
+                    .clip(CircleShape)
+                    .clickable { navigate("notifications") }
                     .sharedElement(
                         tag = NotificationSharedElements.TAG_ICON,
                         element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                     )
-                    .clip(CircleShape)
                     .size(56.dp)
-                    .clickable { navigate("notifications") }
                     .padding(16.dp)
             )
         }
@@ -157,7 +157,7 @@ private fun NavTransitionScope.Item(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush  = Brush.verticalGradient(
+                    brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
                             Color.Black.copy(alpha = 0.75f)
