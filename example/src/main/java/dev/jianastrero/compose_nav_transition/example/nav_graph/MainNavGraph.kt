@@ -25,14 +25,28 @@
 
 package dev.jianastrero.compose_nav_transition.example.nav_graph
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import dev.jianastrero.compose_nav_transition.example.screens.MainScreen
+import dev.jianastrero.compose_nav_transition.example.screens.NotificationScreen
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionGraphBuilder
 import dev.jianastrero.compose_nav_transition.navigation.transitionComposable
 
-fun NavTransitionGraphBuilder.MainNavGraph() {
+fun NavTransitionGraphBuilder.MainNavGraph(
+    navigate: (String) -> Unit,
+    back: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     transitionComposable("home") {
-        MainScreen(modifier = Modifier.fillMaxSize())
+        MainScreen(
+            navigate = navigate,
+            modifier = modifier
+        )
+    }
+    transitionComposable("notifications") {
+        NotificationScreen(
+            navigate = navigate,
+            back = back,
+            modifier = modifier
+        )
     }
 }
