@@ -109,11 +109,12 @@ private fun NavTransitionScope.Header(
         Icon(
             imageVector = Icons.Outlined.Notifications,
             contentDescription = "Notifications",
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .sharedElement(
                     tag = NotificationSharedElements.TAG_ICON,
-                    element = NotificationSharedElements.notificationIconElement
+                    element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                 )
                 .clip(CircleShape)
                 .size(56.dp)
@@ -126,7 +127,7 @@ private fun NavTransitionScope.Header(
                 .align(Alignment.CenterEnd)
                 .sharedElement(
                     tag = NotificationSharedElements.TAG_ICON_CLOSE,
-                    element = NotificationSharedElements.closeIconElement
+                    element = NotificationSharedElements.closeIconElement(tint = Color.Black)
                 )
                 .clip(CircleShape)
                 .size(56.dp)
