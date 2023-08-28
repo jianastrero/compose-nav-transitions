@@ -11,15 +11,15 @@
 <details>
   <summary><h2>DEMO</h2></summary>
 
-  #### v0.2.0-alpha01
-  
-  https://github.com/jianastrero/compose-nav-transitions/assets/7688625/067a78b5-a996-4afa-91c1-8d6e7c20da61
-  
-  #### v0.1.0-alpha01
-  
-  https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f55f-4022-8402-e46369b893bb
-  
-  ![Magic GIF](assets/magic.gif)
+#### v0.2.0-alpha01
+
+https://github.com/jianastrero/compose-nav-transitions/assets/7688625/067a78b5-a996-4afa-91c1-8d6e7c20da61
+
+#### v0.1.0-alpha01
+
+https://github.com/jianastrero/compose-nav-transitions/assets/7688625/620dc6d1-f55f-4022-8402-e46369b893bb
+
+![Magic GIF](assets/magic.gif)
 
 </details>
 
@@ -37,10 +37,10 @@ implementation("dev.jianastrero.compose-nav-transitions:compose-nav-transitions:
 
   <summary><h3>Version Guide</h3></summary>
 
-  | Compose Nav Transitions | Navigation Compose | Demo                                             |
+| Compose Nav Transitions | Navigation Compose | Demo                                             |
   |-------------------------|--------------------|--------------------------------------------------|
-  | 0.2.0-alpha01           | 2.7.1              | ![v0.2.0-alpha01.gif](assets/v0.2.0-alpha01.gif) |
-  | 0.1.0-alpha01           | 2.7.1              | ![v0.1.0-alpha01.gif](assets/v0.1.0-alpha01.gif) |
+| 0.2.0-alpha01           | 2.7.1              | ![v0.2.0-alpha01.gif](assets/v0.2.0-alpha01.gif) |
+| 0.1.0-alpha01           | 2.7.1              | ![v0.1.0-alpha01.gif](assets/v0.1.0-alpha01.gif) |
 
 </details>
 
@@ -54,7 +54,7 @@ NavTransitionHost(
   startDestination = "Home",
   modifier = Modifier.fillMaxSize()
 ) {
-    /* Rest of your code */
+  /* Rest of your code */
 }
 ```
 
@@ -62,7 +62,7 @@ NavTransitionHost(
 
 ```kotlin
 transitionComposable("home") {
-    /* Rest of your code */
+  /* Rest of your code */
 }
 ```
 
@@ -70,29 +70,29 @@ transitionComposable("home") {
 
 ```kotlin
 transitionComposable("home") {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Home",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(32.dp)
-                .sharedElement("text") // <-- Add this
-                .padding(4.dp)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.sample),
-            contentDescription = "Sample Image",
-            modifier = Modifier
-                .size(100.dp)
-                .clickable { navController.navigate("detail") }
-                .sharedElement("image") // <-- Add this
-        )
-    }
+  Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
+    modifier = Modifier.fillMaxSize()
+  ) {
+    Text(
+      text = "Home",
+      fontSize = 24.sp,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier
+        .padding(32.dp)
+        .sharedElement("text") // <-- Add this
+        .padding(4.dp)
+    )
+    Image(
+      painter = painterResource(id = R.drawable.sample),
+      contentDescription = "Sample Image",
+      modifier = Modifier
+        .size(100.dp)
+        .clickable { navController.navigate("detail") }
+        .sharedElement("image") // <-- Add this
+    )
+  }
 }
 ```
 
@@ -115,7 +115,7 @@ To contribute to Compose Nav Transitions, follow these steps:
 2. Create a branch: `git checkout -b <branch_name>`.
 3. Make your changes and commit them: `git commit -m '<commit_message>'`
 4. Push to the original branch: `git push origin ComposeNavTransitions/main`
-5. Create the pull request. 
+5. Create the pull request.
 
 _Alternatively see the GitHub documentation on [creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)._
 
