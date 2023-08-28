@@ -75,6 +75,11 @@ private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
     val elements = rememberElements()
+    val tags by remember(route, previousRoute, NavTransitions.screenSharedElements) {
+        derivedStateOf {
+            NavTransitions.keysFor(route, previousRoute)
+        }
+    }
 
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
@@ -83,6 +88,14 @@ private fun NavTransitionScope.TransitionAnimations() {
         finishedListener = {
             visible = false
         }
+    )
+    val originalElementVisibilityProgress by animateFloatAsState(
+        targetValue = if (animate) 1f else 0f,
+        label = "original element visibility",
+        animationSpec = tween(
+            durationMillis = 50,
+            delayMillis = NavTransitions.transitionDuration - 50
+        )
     )
 
     if (visible) {
@@ -93,9 +106,7 @@ private fun NavTransitionScope.TransitionAnimations() {
         ) {
             Backdrop()
             elements.forEach { element ->
-                element.Element(
-                    animationProgress
-                )
+                element.Element(animationProgress)
             }
         }
     }
@@ -104,6 +115,12 @@ private fun NavTransitionScope.TransitionAnimations() {
         if (!animate) {
             animate = true
             visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
+        }
+    }
+
+    LaunchedEffect(originalElementVisibilityProgress) {
+        alphaMap = tags.associateWith {
+            originalElementVisibilityProgress
         }
     }
 }
