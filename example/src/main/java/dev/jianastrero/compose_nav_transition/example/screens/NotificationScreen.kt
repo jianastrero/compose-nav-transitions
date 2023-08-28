@@ -52,15 +52,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jianastrero.compose_nav_transition.element.ImageVectorElement
 import dev.jianastrero.compose_nav_transition.example.Constants
 import dev.jianastrero.compose_nav_transition.example.R
+import dev.jianastrero.compose_nav_transition.example.shared_elements.NotificationSharedElements
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @Composable
@@ -83,8 +82,9 @@ fun NavTransitionScope.NotificationScreen(
                 NotificationItem(
                     title = "Notification $it",
                     message = "($it) ${Constants.DUMMY_TEXT}",
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    modifier = Modifier.fillMaxWidth()
+                    image = R.drawable.ic_launcher_foreground,
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .clickable { navigate("notification_detail/$it") }
                 )
             }
@@ -112,14 +112,8 @@ private fun NavTransitionScope.Header(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .sharedElement(
-                    "notifications icon",
-                    element = ImageVectorElement(
-                        Icons.Outlined.Notifications,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(56.dp)
-                            .padding(16.dp)
-                    )
+                    tag = NotificationSharedElements.TAG_ICON,
+                    element = NotificationSharedElements.notificationIconElement
                 )
                 .clip(CircleShape)
                 .size(56.dp)
@@ -130,7 +124,10 @@ private fun NavTransitionScope.Header(
             contentDescription = "Close",
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .sharedElement("close")
+                .sharedElement(
+                    tag = NotificationSharedElements.TAG_ICON_CLOSE,
+                    element = NotificationSharedElements.closeIconElement
+                )
                 .clip(CircleShape)
                 .size(56.dp)
                 .clickable(onClick = back)
@@ -140,10 +137,10 @@ private fun NavTransitionScope.Header(
 }
 
 @Composable
-private fun NotificationItem(
+private fun NavTransitionScope.NotificationItem(
     title: String,
     message: String,
-    painter: Painter,
+    image: Int,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -152,9 +149,13 @@ private fun NotificationItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = painter,
+                painter = painterResource(id = image),
                 contentDescription = "Notification Item",
                 modifier = Modifier
+                    .sharedElement(
+                        tag = NotificationSharedElements.TAG_ITEM_IMAGE,
+                        element = NotificationSharedElements.itemImageElement(image)
+                    )
                     .size(32.dp)
                     .border(1.dp, Color.LightGray)
             )
@@ -166,7 +167,15 @@ private fun NotificationItem(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .sharedElement(
+                            tag = NotificationSharedElements.TAG_ITEM_TEXT,
+                            element = NotificationSharedElements.itemTextElement(
+                                title,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        )
                 )
                 Text(
                     text = message,
@@ -176,6 +185,13 @@ private fun NotificationItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp)
+                        .sharedElement(
+                            tag = NotificationSharedElements.TAG_ITEM_DESCRIPTION,
+                            element = NotificationSharedElements.itemDescriptionElement(
+                                message,
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        )
                 )
             }
         }
