@@ -9,10 +9,7 @@
 [![GitHub license](https://img.shields.io/github/license/jianastrero/compose-nav-transitions?style=for-the-badge)](https://github.com/jianastrero/compose-nav-transitions/blob/main/LICENSE)
 
 <details>
-  <summary>
-    <h2>DEMO</h2>
-    <video src="assets/v0.2.0-alpha01.mp4" controls="controls"></video>
-  </summary>
+  <summary><h2>DEMO</h2></summary>
 
   #### v0.2.0-alpha01
   
