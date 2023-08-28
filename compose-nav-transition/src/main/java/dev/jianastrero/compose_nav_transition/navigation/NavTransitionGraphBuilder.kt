@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavigatorProvider
@@ -48,9 +49,13 @@ class NavTransitionGraphBuilder(
 
 fun NavTransitionGraphBuilder.transitionComposable(
     route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
     content: @Composable NavTransitionScope.(NavBackStackEntry) -> Unit
 ) {
-    composable(route = route) { navBackStackEntry ->
+    composable(
+        route = route,
+        arguments = arguments
+    ) { navBackStackEntry ->
         val lifecycleOwner = LocalLifecycleOwner.current
         val scope = remember(route) {
             NavTransitionScope(route)
