@@ -147,7 +147,10 @@ private fun NotificationItem(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Image(
                 painter = painter,
                 contentDescription = "Notification Item",
@@ -170,7 +173,9 @@ private fun NotificationItem(
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             }
         }
