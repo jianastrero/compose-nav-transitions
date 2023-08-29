@@ -43,14 +43,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.TextUnit
-import java.util.*
+import androidx.compose.ui.unit.dp
 
 abstract class Element(
     internal val tag: String,
     internal val modifier: Modifier = Modifier
 ) {
-    internal val id: String = UUID.randomUUID().toString()
+    internal var rect: DpRect = DpRect(0.dp, 0.dp, 0.dp, 0.dp)
 
     @Composable
     internal open fun Composable() {
