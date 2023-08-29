@@ -47,7 +47,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
@@ -55,8 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
 import androidx.compose.ui.zIndex
-import dev.jianastrero.compose_nav_transition.NavTransitions
 import dev.jianastrero.compose_nav_transition.element.Element
+import dev.jianastrero.compose_nav_transition.element.IconElement
+import dev.jianastrero.compose_nav_transition.element.ImageElement
+import dev.jianastrero.compose_nav_transition.element.TextElement
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @Composable
@@ -74,17 +75,12 @@ fun NavTransitionScope.NavTransitionContainer(
 private fun NavTransitionScope.TransitionAnimations() {
     var animate by remember { mutableStateOf(false) }
     var visible by remember { mutableStateOf(false) }
-    val elements = rememberElements()
-    val tags by remember(route, previousRoute, NavTransitions.screenSharedElements) {
-        derivedStateOf {
-            NavTransitions.keysFor(route, previousRoute)
-        }
-    }
+    val sharedElements = rememberSharedElements()
 
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "all animations",
-        animationSpec = tween(NavTransitions.transitionDuration),
+        animationSpec = tween(transitionDuration),
         finishedListener = {
             visible = false
         }
@@ -94,7 +90,7 @@ private fun NavTransitionScope.TransitionAnimations() {
         label = "original element visibility",
         animationSpec = tween(
             durationMillis = 50,
-            delayMillis = NavTransitions.transitionDuration - 50
+            delayMillis = transitionDuration - 50
         )
     )
 
@@ -104,58 +100,48 @@ private fun NavTransitionScope.TransitionAnimations() {
                 .zIndex(Float.MAX_VALUE)
                 .fillMaxSize()
         ) {
-            Backdrop()
-            elements.forEach { element ->
-                element.Element(animationProgress)
+            Backdrop(animationProgress)
+            sharedElements.forEach { elementPair ->
+                elementPair.Element(animationProgress)
             }
         }
     }
 
-    LaunchedEffect(route, previousRoute) {
-        if (!animate) {
+    LaunchedEffect(sharedElements) {
+        if (!animate && sharedElements.isNotEmpty()) {
             animate = true
-            visible = true && route != previousRoute && route.isNotBlank() && previousRoute.isNotBlank()
+            visible = true
         }
     }
 
     LaunchedEffect(originalElementVisibilityProgress) {
-        alphaMap = tags.associateWith {
-            originalElementVisibilityProgress
+        alphaMap = elements.keys.associateWith { tag ->
+            if (previousElements.firstOrNull { it.tag == tag} != null) {
+                originalElementVisibilityProgress
+            } else {
+                1f
+            }
         }
     }
 }
 
 @Composable
-private fun NavTransitionScope.rememberElements(): Collection<Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>> {
-    val density = LocalDensity.current
-
-    val elements by remember(route, previousRoute, NavTransitions.screenSharedElements) {
+private fun NavTransitionScope.rememberSharedElements(): List<Pair<Element, Element>> {
+    val sharedElements by remember(previousElements) {
         derivedStateOf {
-            NavTransitions.keysFor(route, previousRoute).map {
-                val start = NavTransitions.screenSharedElements[previousRoute]
-                    ?.get(it)
-                val end = NavTransitions.screenSharedElements[route]
-                    ?.get(it)
-                val startRect = start?.first?.toDpRect(density) ?: DpRect.Zero
-                val endRect = end?.first?.toDpRect(density) ?: DpRect.Zero
-                (startRect to start?.second) to (endRect to end?.second)
+            previousElements.mapNotNull { element ->
+                elements[element.tag]?.let { currentElement ->
+                    element to currentElement
+                }
             }
         }
     }
 
-    return elements
+    return sharedElements
 }
 
 @Composable
-private fun Backdrop() {
-    var backdropVisible by remember { mutableStateOf(true) }
-
-    val backdropVisibilityProgress by animateFloatAsState(
-        targetValue = if (backdropVisible) 1f else 0f,
-        label = "backdrop animation",
-        animationSpec = tween(durationMillis = NavTransitions.transitionDuration)
-    )
-
+private fun Backdrop(animationProgress: Float) {
     Spacer(
         modifier = Modifier
             .fillMaxSize()
@@ -166,34 +152,30 @@ private fun Backdrop() {
                     }
                 )
             }
-            .alpha(backdropVisibilityProgress)
+            .alpha(1f - animationProgress)
             .background(MaterialTheme.colorScheme.background)
     )
-
-    LaunchedEffect(Unit) {
-        if (backdropVisible) {
-            backdropVisible = false
-        }
-    }
 }
 
 @Composable
-private fun Pair<Pair<DpRect, Element?>, Pair<DpRect, Element?>>.Element(animationProgress: Float) {
-    val (start, end) = this
-    val rect = start.first.lerp(end.first, animationProgress)
+private fun Pair<Element, Element>.Element(animationProgress: Float) {
+    val (startElement, endElement) = this
+    val rect = startElement.rect.lerp(endElement.rect, animationProgress)
 
     Box(
         modifier = Modifier
             .offset(rect.left, rect.top)
             .size(rect.width, rect.height)
     ) {
-        when (val element = end.second) {
-            null -> Spacer(
+        when (endElement) {
+            is TextElement,
+            is ImageElement,
+            is IconElement -> endElement.Composable()
+            else -> Spacer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.LightGray)
             )
-            else -> element.Composable()
         }
     }
 }
