@@ -29,14 +29,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.example.screens.MainScreen
 import dev.jianastrero.compose_nav_transition.example.screens.NotificationDetailScreen
 import dev.jianastrero.compose_nav_transition.example.screens.NotificationScreen
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionGraphBuilder
+import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 import dev.jianastrero.compose_nav_transition.navigation.transitionComposable
 
 fun NavTransitionGraphBuilder.MainNavGraph(
-    navigate: (String) -> Unit,
+    navigate: NavTransitionScope.(String, sharedElements: Collection<Element>?) -> Unit,
     back: () -> Unit,
     modifier: Modifier = Modifier
 ) {

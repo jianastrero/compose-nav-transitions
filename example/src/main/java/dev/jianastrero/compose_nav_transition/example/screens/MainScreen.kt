@@ -59,6 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.example.R
 import dev.jianastrero.compose_nav_transition.example.shared_elements.NotificationSharedElements
 import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
@@ -66,7 +67,7 @@ import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavTransitionScope.MainScreen(
-    navigate: (String) -> Unit,
+    navigate: NavTransitionScope.(String, sharedElements: Collection<Element>?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -104,7 +105,7 @@ fun NavTransitionScope.MainScreen(
 
 @Composable
 private fun NavTransitionScope.Header(
-    navigate: (String) -> Unit,
+    navigate: NavTransitionScope.(String, sharedElements: Collection<Element>?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -127,7 +128,7 @@ private fun NavTransitionScope.Header(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .clip(CircleShape)
-                    .clickable { navigate("notifications") }
+                    .clickable { navigate("notifications", null) }
                     .sharedElement(
                         element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                     )
@@ -181,5 +182,5 @@ private fun NavTransitionScope.Item(
 @Preview
 @Composable
 private fun MainScreenPreview() {
-    NavTransitionScope.Preview.MainScreen(navigate = {})
+    NavTransitionScope.Preview.MainScreen(navigate = { _, _ -> })
 }

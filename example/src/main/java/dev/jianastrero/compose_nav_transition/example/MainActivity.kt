@@ -21,7 +21,13 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 MainNavGraph(
-                    navigate = navController::navigate,
+                    navigate = { route, elements ->
+                        navController.navigate(route) {
+                            elements?.let {
+                                sharedElements(sharedElements = it.toTypedArray())
+                            }
+                        }
+                    },
                     back = navController::popBackStack,
                     modifier = Modifier.fillMaxSize()
                 )

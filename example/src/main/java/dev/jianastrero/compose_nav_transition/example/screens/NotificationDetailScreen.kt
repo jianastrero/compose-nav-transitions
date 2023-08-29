@@ -72,7 +72,7 @@ fun NavTransitionScope.NotificationDetailScreen(
                     contentDescription = "Notification Item",
                     modifier = Modifier
                         .sharedElement(
-                            element = NotificationSharedElements.itemImageElement(R.drawable.ic_launcher_foreground)
+                            element = NotificationSharedElements.itemImageElement(painterResource(id = R.drawable.ic_launcher_foreground))
                         )
                         .fillMaxWidth()
                         .aspectRatio(1f)

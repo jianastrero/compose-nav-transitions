@@ -32,11 +32,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,7 +46,6 @@ import dev.jianastrero.compose_nav_transition.element.TextElement
 
 
 object NotificationSharedElements  {
-    @Composable
     fun notificationIconElement(tint: Color) = IconElement(
         tag = "notification_icon",
         imageVector = Icons.Outlined.Notifications,
@@ -57,7 +55,6 @@ object NotificationSharedElements  {
             .padding(16.dp)
     )
 
-    @Composable
     fun closeIconElement(tint: Color) = IconElement(
         tag = "notification_icon_close",
         imageVector = Icons.Outlined.Close,
@@ -67,17 +64,15 @@ object NotificationSharedElements  {
             .padding(16.dp)
     )
 
-    @Composable
-    fun itemImageElement(id: Int) = ImageElement(
+    fun itemImageElement(painter: Painter) = ImageElement(
         tag = "notification_item_image",
-        painter = painterResource(id = id),
+        painter = painter,
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     )
 
-    @Composable
     fun itemTextElement(
         text: String,
         style: TextStyle
@@ -88,7 +83,6 @@ object NotificationSharedElements  {
         style = style
     )
 
-    @Composable
     fun itemDescriptionElement(
         text: String,
         style: TextStyle

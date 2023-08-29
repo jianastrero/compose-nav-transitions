@@ -48,6 +48,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.example.Constants
 import dev.jianastrero.compose_nav_transition.example.R
 import dev.jianastrero.compose_nav_transition.example.shared_elements.NotificationSharedElements
@@ -64,7 +66,7 @@ import dev.jianastrero.compose_nav_transition.navigation.NavTransitionScope
 
 @Composable
 fun NavTransitionScope.NotificationScreen(
-    navigate: (String) -> Unit,
+    navigate: NavTransitionScope.(String, sharedElements: Collection<Element>?) -> Unit,
     back: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -80,12 +82,9 @@ fun NavTransitionScope.NotificationScreen(
         ) {
             items(24) {
                 NotificationItem(
-                    title = "Notification $it",
-                    message = "($it) ${Constants.DUMMY_TEXT}",
-                    image = R.drawable.ic_launcher_foreground,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { navigate("notification_detail/$it") }
+                    navigate = navigate,
+                    id = it,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -137,23 +136,47 @@ private fun NavTransitionScope.Header(
 
 @Composable
 private fun NavTransitionScope.NotificationItem(
-    title: String,
-    message: String,
-    image: Int,
+    navigate: NavTransitionScope.(String, sharedElements: Collection<Element>?) -> Unit,
+    id: Int,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    val title = "Notification $id"
+    val message = "($id) ${Constants.DUMMY_TEXT}"
+    val painter = painterResource(id = R.drawable.ic_launcher_foreground)
+    val headlineSmall = MaterialTheme.typography.headlineSmall
+    val labelSmall = MaterialTheme.typography.labelSmall
+
+    val elements = remember {
+        listOf(
+            NotificationSharedElements.itemImageElement(painter),
+            NotificationSharedElements.itemTextElement(
+                text = title,
+                style = headlineSmall
+            ),
+            NotificationSharedElements.itemDescriptionElement(
+                text = message,
+                style = labelSmall
+            )
+        )
+    }
+
+    Column(
+        modifier = modifier.clickable {
+            navigate(
+                "notification_detail/$id",
+                elements
+            )
+        }
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(id = image),
+                painter = painter,
                 contentDescription = "Notification Item",
                 modifier = Modifier
-                    .sharedElement(
-                        element = NotificationSharedElements.itemImageElement(image)
-                    )
+                    .sharedElement(element = elements[0])
                     .size(32.dp)
                     .border(1.dp, Color.LightGray)
             )
@@ -164,30 +187,20 @@ private fun NavTransitionScope.NotificationItem(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = headlineSmall,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .sharedElement(
-                            element = NotificationSharedElements.itemTextElement(
-                                title,
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                        )
+                        .sharedElement(element = elements[1])
                 )
                 Text(
                     text = message,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = labelSmall,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp)
-                        .sharedElement(
-                            element = NotificationSharedElements.itemDescriptionElement(
-                                message,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        )
+                        .sharedElement(element = elements[2])
                 )
             }
         }
@@ -205,7 +218,7 @@ private fun NavTransitionScope.NotificationItem(
 @Composable
 private fun NotificationScreenPreview() {
     NavTransitionScope.Preview.NotificationScreen(
-        navigate = {},
+        navigate = { _, _ -> },
         back = {},
         modifier = Modifier.fillMaxSize()
     )
