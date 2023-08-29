@@ -48,9 +48,10 @@ import java.util.*
 
 abstract class Element(
     internal val tag: String,
-    internal val modifier: Modifier = Modifier,
-    internal val id: String = UUID.randomUUID().toString()
+    internal val modifier: Modifier = Modifier
 ) {
+    internal val id: String = UUID.randomUUID().toString()
+
     @Composable
     internal open fun Composable() {
         Spacer(modifier = modifier)
