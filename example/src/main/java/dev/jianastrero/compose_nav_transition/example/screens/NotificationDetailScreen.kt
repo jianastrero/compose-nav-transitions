@@ -72,7 +72,6 @@ fun NavTransitionScope.NotificationDetailScreen(
                     contentDescription = "Notification Item",
                     modifier = Modifier
                         .sharedElement(
-                            tag = NotificationSharedElements.TAG_ITEM_IMAGE,
                             element = NotificationSharedElements.itemImageElement(R.drawable.ic_launcher_foreground)
                         )
                         .fillMaxWidth()
@@ -88,7 +87,6 @@ fun NavTransitionScope.NotificationDetailScreen(
                     modifier = Modifier
                         .padding(12.dp)
                         .sharedElement(
-                            tag = NotificationSharedElements.TAG_ITEM_TEXT,
                             element = NotificationSharedElements.itemTextElement(
                                 "Notification $id",
                                 style = MaterialTheme.typography.headlineMedium
@@ -104,7 +102,6 @@ fun NavTransitionScope.NotificationDetailScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp)
                         .sharedElement(
-                            tag = NotificationSharedElements.TAG_ITEM_DESCRIPTION,
                             element = NotificationSharedElements.itemDescriptionElement(
                                 "($id) ${Constants.DUMMY_TEXT}",
                                 style = MaterialTheme.typography.labelSmall
@@ -122,7 +119,6 @@ fun NavTransitionScope.NotificationDetailScreen(
                 .clip(CircleShape)
                 .clickable(onClick = back)
                 .sharedElement(
-                    tag = NotificationSharedElements.TAG_ICON_CLOSE,
                     element = NotificationSharedElements.closeIconElement(tint = Color.White)
                 )
                 .size(56.dp)

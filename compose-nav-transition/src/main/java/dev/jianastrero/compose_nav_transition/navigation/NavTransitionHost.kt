@@ -73,11 +73,11 @@ fun NavTransitionHost(
             startDestination = startDestination,
             route = route,
             onScopeChanged = {
-                currentScope?.tagsSet = emptySet()
+                currentScope?.elements = emptyMap()
                 val previousRoute = currentScope?.route ?: ""
                 currentScope = it
                 currentScope?.previousRoute = previousRoute
-                currentScope?.tagsSet = emptySet()
+                currentScope?.elements = emptyMap()
             }
         ).apply(builder).build()
     }

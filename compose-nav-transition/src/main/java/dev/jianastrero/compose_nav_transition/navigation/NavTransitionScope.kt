@@ -40,15 +40,11 @@ class NavTransitionScope(
     internal val route: String
 ) {
     internal var previousRoute: String by mutableStateOf("")
-    internal var tagsSet: Set<String> by mutableStateOf(emptySet())
+    internal var elements: Map<String, Element> by mutableStateOf(emptyMap())
     internal var alphaMap: Map<String, Float> by mutableStateOf(emptyMap())
 
-    fun Modifier.sharedElement(
-        tag: String,
-        element: Element? = null
-    ): Modifier = onGloballyPositioned {
-        if (tagsSet.isEmpty() || !tagsSet.contains(tag)) {
-            tagsSet = tagsSet + tag
+    fun Modifier.sharedElement(tag: String): Modifier = onGloballyPositioned {
+        if (elements.isEmpty() || !elements.containsKey(tag)) {
             val rect = with(it.positionInRoot()) {
                 Rect(
                     left = x,
@@ -57,9 +53,26 @@ class NavTransitionScope(
                     bottom = (y + it.size.height)
                 )
             }
+            val element = object : Element(tag) {}
+            elements = elements + (tag to element)
             NavTransitions.addSharedElement(route, tag to (rect to element))
         }
     }.alpha(alphaMap[tag] ?: 1f)
+
+    fun Modifier.sharedElement(element: Element): Modifier = onGloballyPositioned {
+        if (elements.isEmpty() || !elements.containsKey(element.tag)) {
+            elements = elements + (element.tag to element)
+            val rect = with(it.positionInRoot()) {
+                Rect(
+                    left = x,
+                    top = y,
+                    right = (x + it.size.width),
+                    bottom = (y + it.size.height)
+                )
+            }
+            NavTransitions.addSharedElement(route, element.tag to (rect to element))
+        }
+    }.alpha(alphaMap[element.tag] ?: 1f)
 
     companion object {
         val Preview = NavTransitionScope("")

@@ -47,14 +47,9 @@ import dev.jianastrero.compose_nav_transition.element.TextElement
 
 
 object NotificationSharedElements  {
-    const val TAG_ICON = "notification_icon"
-    const val TAG_ICON_CLOSE = "notification_icon_close"
-    const val TAG_ITEM_IMAGE = "notification_item_image"
-    const val TAG_ITEM_TEXT = "notification_item_text"
-    const val TAG_ITEM_DESCRIPTION = "notification_item_description"
-
     @Composable
     fun notificationIconElement(tint: Color) = IconElement(
+        tag = "notification_icon",
         imageVector = Icons.Outlined.Notifications,
         tint = tint,
         modifier = Modifier
@@ -64,6 +59,7 @@ object NotificationSharedElements  {
 
     @Composable
     fun closeIconElement(tint: Color) = IconElement(
+        tag = "notification_icon_close",
         imageVector = Icons.Outlined.Close,
         tint = tint,
         modifier = Modifier
@@ -73,6 +69,7 @@ object NotificationSharedElements  {
 
     @Composable
     fun itemImageElement(id: Int) = ImageElement(
+        tag = "notification_item_image",
         painter = painterResource(id = id),
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -85,6 +82,7 @@ object NotificationSharedElements  {
         text: String,
         style: TextStyle
     ) = TextElement(
+        tag = "notification_item_text",
         text = text,
         textAlign = TextAlign.Center,
         style = style
@@ -95,6 +93,7 @@ object NotificationSharedElements  {
         text: String,
         style: TextStyle
     ) = TextElement(
+        tag = "notification_item_description",
         text = text,
         overflow = TextOverflow.Ellipsis,
         style = style

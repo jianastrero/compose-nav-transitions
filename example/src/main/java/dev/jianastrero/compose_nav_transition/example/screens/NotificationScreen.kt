@@ -113,7 +113,6 @@ private fun NavTransitionScope.Header(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .sharedElement(
-                    tag = NotificationSharedElements.TAG_ICON,
                     element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                 )
                 .clip(CircleShape)
@@ -126,7 +125,6 @@ private fun NavTransitionScope.Header(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .sharedElement(
-                    tag = NotificationSharedElements.TAG_ICON_CLOSE,
                     element = NotificationSharedElements.closeIconElement(tint = Color.Black)
                 )
                 .clip(CircleShape)
@@ -154,7 +152,6 @@ private fun NavTransitionScope.NotificationItem(
                 contentDescription = "Notification Item",
                 modifier = Modifier
                     .sharedElement(
-                        tag = NotificationSharedElements.TAG_ITEM_IMAGE,
                         element = NotificationSharedElements.itemImageElement(image)
                     )
                     .size(32.dp)
@@ -171,7 +168,6 @@ private fun NavTransitionScope.NotificationItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .sharedElement(
-                            tag = NotificationSharedElements.TAG_ITEM_TEXT,
                             element = NotificationSharedElements.itemTextElement(
                                 title,
                                 style = MaterialTheme.typography.headlineSmall
@@ -187,7 +183,6 @@ private fun NavTransitionScope.NotificationItem(
                         .fillMaxWidth()
                         .padding(top = 4.dp)
                         .sharedElement(
-                            tag = NotificationSharedElements.TAG_ITEM_DESCRIPTION,
                             element = NotificationSharedElements.itemDescriptionElement(
                                 message,
                                 style = MaterialTheme.typography.labelSmall
