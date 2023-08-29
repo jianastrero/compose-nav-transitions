@@ -57,6 +57,7 @@ fun NavTransitionHost(
     builder: NavTransitionGraphBuilder.() -> Unit
 ) {
     var currentScope: NavTransitionScope? by remember { mutableStateOf(null) }
+
     val enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
         remember(transitionDuration) {
             { fadeIn(tween(transitionDuration)) }
@@ -67,16 +68,21 @@ fun NavTransitionHost(
         }
 
     val navGraph = remember(navController, startDestination, route, builder) {
-        NavTransitions.transitionDuration = transitionDuration
         NavTransitionGraphBuilder(
             provider = navController.navigatorProvider,
             startDestination = startDestination,
             route = route,
             onScopeChanged = {
+                // Reset previous scope
+                val previousElements = currentScope?.elements?.values ?: emptyList()
+                currentScope?.previousElements = emptyList()
                 currentScope?.elements = emptyMap()
-                val previousRoute = currentScope?.route ?: ""
+
                 currentScope = it
-                currentScope?.previousRoute = previousRoute
+                currentScope?.transitionDuration = transitionDuration
+                currentScope?.previousElements = previousElements
+
+                // Reset current scope elements
                 currentScope?.elements = emptyMap()
             }
         ).apply(builder).build()
