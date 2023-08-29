@@ -26,55 +26,73 @@
 package dev.jianastrero.compose_nav_transition.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import dev.jianastrero.compose_nav_transition.NavTransitions
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.DpRect
+import androidx.navigation.NavOptionsBuilder
 import dev.jianastrero.compose_nav_transition.element.Element
 
-class NavTransitionScope(
-    internal val route: String
-) {
-    internal var previousRoute: String by mutableStateOf("")
+class NavTransitionScope {
+    internal var previousElements: Collection<Element> by mutableStateOf(emptyList())
     internal var elements: Map<String, Element> by mutableStateOf(emptyMap())
     internal var alphaMap: Map<String, Float> by mutableStateOf(emptyMap())
+    internal var transitionDuration by mutableIntStateOf(0)
 
-    fun Modifier.sharedElement(tag: String): Modifier = onGloballyPositioned {
-        if (elements.isEmpty() || !elements.containsKey(tag)) {
-            val rect = with(it.positionInRoot()) {
-                Rect(
-                    left = x,
-                    top = y,
-                    right = (x + it.size.width),
-                    bottom = (y + it.size.height)
-                )
-            }
-            val element = object : Element(tag) {}
-            elements = elements + (tag to element)
-            NavTransitions.addSharedElement(route, tag to (rect to element))
+    fun Modifier.sharedElement(tag: String): Modifier = composed {
+        val density = LocalDensity.current
+
+        onGloballyPositioned {
+            addElement(density, tag, null, it)
         }
     }.alpha(alphaMap[tag] ?: 1f)
 
-    fun Modifier.sharedElement(element: Element): Modifier = onGloballyPositioned {
-        if (elements.isEmpty() || !elements.containsKey(element.tag)) {
-            elements = elements + (element.tag to element)
-            val rect = with(it.positionInRoot()) {
-                Rect(
-                    left = x,
-                    top = y,
-                    right = (x + it.size.width),
-                    bottom = (y + it.size.height)
-                )
-            }
-            NavTransitions.addSharedElement(route, element.tag to (rect to element))
+    fun Modifier.sharedElement(element: Element): Modifier = composed {
+        val density = LocalDensity.current
+
+        onGloballyPositioned {
+            addElement(density, element.tag, element, it)
         }
     }.alpha(alphaMap[element.tag] ?: 1f)
 
+    private fun addElement(
+        density: Density,
+        tag: String,
+        element: Element?,
+        layoutCoordinates: LayoutCoordinates
+    ) {
+        if (elements.isEmpty() || !elements.containsKey(tag)) {
+            val newElement = element ?: object : Element(tag) {}
+            with(density) {
+                newElement.rect = with(layoutCoordinates.positionInRoot()) {
+                    val xDp = x.toDp()
+                    val yDp = y.toDp()
+
+                    DpRect(
+                        left = xDp,
+                        top = yDp,
+                        right = (xDp + layoutCoordinates.size.width.toDp()),
+                        bottom = (yDp + layoutCoordinates.size.height.toDp())
+                    )
+                }
+                elements = elements + (tag to newElement)
+            }
+        }
+    }
+
+    fun NavOptionsBuilder.elements(vararg elements: Element) {
+        previousElements = elements.toList()
+    }
+
     companion object {
-        val Preview = NavTransitionScope("")
+        val Preview = NavTransitionScope()
     }
 }
