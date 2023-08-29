@@ -57,8 +57,8 @@ fun NavTransitionGraphBuilder.transitionComposable(
         arguments = arguments
     ) { navBackStackEntry ->
         val lifecycleOwner = LocalLifecycleOwner.current
-        val scope = remember(route) {
-            NavTransitionScope(route)
+        val scope = remember {
+            NavTransitionScope()
         }
 
         scope.NavTransitionContainer(modifier = Modifier.fillMaxSize()) {
