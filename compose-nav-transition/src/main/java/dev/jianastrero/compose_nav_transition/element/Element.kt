@@ -31,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -45,9 +44,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import java.util.*
 
 abstract class Element(
-    internal val modifier: Modifier = Modifier
+    internal val tag: String,
+    internal val modifier: Modifier = Modifier,
+    internal val id: String = UUID.randomUUID().toString()
 ) {
     @Composable
     internal open fun Composable() {
@@ -56,6 +58,7 @@ abstract class Element(
 }
 
 class TextElement(
+    tag: String,
     internal val text: String,
     modifier: Modifier = Modifier,
     internal val fontSize: TextUnit = TextUnit.Unspecified,
@@ -71,7 +74,7 @@ class TextElement(
     internal val maxLines: Int = Int.MAX_VALUE,
     internal val onTextLayout: (TextLayoutResult) -> Unit = {},
     internal val style: TextStyle = TextStyle.Default
-) : Element(modifier) {
+) : Element(tag, modifier) {
     @Composable
     override fun Composable() {
         Text(
@@ -95,11 +98,12 @@ class TextElement(
 }
 
 class ImageElement(
+    tag: String,
     internal val painter: Painter,
     modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
     internal val contentScale: ContentScale = ContentScale.Fit,
-) : Element(modifier) {
+) : Element(tag, modifier) {
     @Composable
     override fun Composable() {
         Image(
@@ -112,11 +116,12 @@ class ImageElement(
 }
 
 class IconElement(
+    tag: String,
     internal val imageVector: ImageVector,
     modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
     internal val tint: Color = Color.Black
-) : Element(modifier) {
+) : Element(tag, modifier) {
     @Composable
     override fun Composable() {
         Icon(
