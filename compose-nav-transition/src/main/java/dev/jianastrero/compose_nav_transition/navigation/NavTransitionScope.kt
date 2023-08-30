@@ -64,6 +64,10 @@ class NavTransitionScope {
         }.alpha(alphaMap[element.tag] ?: 1f)
     }
 
+    fun NavOptionsBuilder.sharedElements(vararg sharedElements: Element) {
+        passedElements = sharedElements.toList()
+    }
+
     private fun addElement(
         density: Density,
         tag: String,
@@ -87,8 +91,14 @@ class NavTransitionScope {
         }
     }
 
-    fun NavOptionsBuilder.sharedElements(vararg sharedElements: Element) {
-        passedElements = sharedElements.toList()
+    internal fun resetElements(
+        elements: Collection<Element> = emptyList(),
+        previousElements: Collection<Element> = emptyList(),
+        passedElements: Collection<Element> = emptyList()
+    ) {
+        this.elements = elements
+        this.previousElements = previousElements
+        this.passedElements = passedElements
     }
 
     companion object {
