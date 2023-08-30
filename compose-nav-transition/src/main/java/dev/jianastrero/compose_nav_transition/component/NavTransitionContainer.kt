@@ -115,8 +115,8 @@ private fun NavTransitionScope.TransitionAnimations() {
     }
 
     LaunchedEffect(originalElementVisibilityProgress) {
-        alphaMap = elements.keys.associateWith { tag ->
-            if (previousElements.firstOrNull { it.tag == tag} != null) {
+        alphaMap = elements.associate { element ->
+            element.tag to if (previousElements.firstOrNull { it.tag == element.tag } != null) {
                 originalElementVisibilityProgress
             } else {
                 1f
@@ -130,7 +130,7 @@ private fun NavTransitionScope.rememberSharedElements(): List<Pair<Element, Elem
     val sharedElements by remember(previousElements) {
         derivedStateOf {
             previousElements.mapNotNull { element ->
-                elements[element.tag]?.let { currentElement ->
+                elements.firstOrNull { it.tag == element.tag }?.let { currentElement ->
                     element to currentElement
                 }
             }
