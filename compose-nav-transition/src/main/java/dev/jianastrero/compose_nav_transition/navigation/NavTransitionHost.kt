@@ -72,18 +72,22 @@ fun NavTransitionHost(
             provider = navController.navigatorProvider,
             startDestination = startDestination,
             route = route,
-            onScopeChanged = {
-                // Reset previous scope
-                val previousElements = currentScope?.elements?.values ?: emptyList()
+            onScopeChanged = { newScope ->
+                var passedElements = currentScope?.passedElements ?: emptyList()
+
+                if (passedElements.isEmpty()) {
+                    passedElements = currentScope?.elements ?: emptyList()
+                }
+
                 currentScope?.previousElements = emptyList()
-                currentScope?.elements = emptyMap()
+                currentScope?.passedElements = emptyList()
+                currentScope?.elements = emptyList()
 
-                currentScope = it
-                currentScope?.transitionDuration = transitionDuration
-                currentScope?.previousElements = previousElements
-
-                // Reset current scope elements
-                currentScope?.elements = emptyMap()
+                newScope.transitionDuration = transitionDuration
+                newScope.elements = emptyList()
+                newScope.previousElements = passedElements
+                newScope.passedElements = emptyList()
+                currentScope = newScope
             }
         ).apply(builder).build()
     }
