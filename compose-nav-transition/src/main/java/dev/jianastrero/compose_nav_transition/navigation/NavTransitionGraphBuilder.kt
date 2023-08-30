@@ -67,7 +67,7 @@ fun NavTransitionGraphBuilder.transitionComposable(
 
         DisposableEffect(lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_START) {
+                if (event == Lifecycle.Event.ON_CREATE) {
                     onScopeChanged(scope)
                 }
             }
