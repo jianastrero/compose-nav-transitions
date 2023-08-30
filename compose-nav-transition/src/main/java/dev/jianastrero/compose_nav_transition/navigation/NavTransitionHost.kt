@@ -79,14 +79,10 @@ fun NavTransitionHost(
                     passedElements = currentScope?.elements ?: emptyList()
                 }
 
-                currentScope?.previousElements = emptyList()
-                currentScope?.passedElements = emptyList()
-                currentScope?.elements = emptyList()
+                currentScope?.resetElements()
 
                 newScope.transitionDuration = transitionDuration
-                newScope.elements = emptyList()
-                newScope.previousElements = passedElements
-                newScope.passedElements = emptyList()
+                newScope.resetElements(previousElements = passedElements)
                 currentScope = newScope
             }
         ).apply(builder).build()
