@@ -128,10 +128,10 @@ private fun NavTransitionScope.Header(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .clip(CircleShape)
-                    .clickable { navigate("notifications", null) }
                     .sharedElement(
                         element = NotificationSharedElements.notificationIconElement(MaterialTheme.colorScheme.primary)
                     )
+                    .clickable { navigate("notifications", null) }
                     .size(56.dp)
                     .padding(16.dp)
             )
