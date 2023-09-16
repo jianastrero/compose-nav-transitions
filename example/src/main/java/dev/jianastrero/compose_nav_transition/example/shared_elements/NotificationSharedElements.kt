@@ -24,21 +24,15 @@
 
 package dev.jianastrero.compose_nav_transition.example.shared_elements
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.jianastrero.compose_nav_transition.element.IconElement
 import dev.jianastrero.compose_nav_transition.element.ImageElement
 import dev.jianastrero.compose_nav_transition.element.TextElement
@@ -48,28 +42,19 @@ object NotificationSharedElements  {
     fun notificationIconElement(tint: Color) = IconElement(
         tag = "notification_icon",
         imageVector = Icons.Outlined.Notifications,
-        tint = tint,
-        modifier = Modifier
-            .size(56.dp)
-            .padding(16.dp)
+        tint = tint
     )
 
     fun closeIconElement(tint: Color) = IconElement(
         tag = "notification_icon_close",
         imageVector = Icons.Outlined.Close,
-        tint = tint,
-        modifier = Modifier
-            .size(56.dp)
-            .padding(16.dp)
+        tint = tint
     )
 
     fun itemImageElement(painter: Painter) = ImageElement(
         tag = "notification_item_image",
         painter = painter,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
+        contentScale = ContentScale.Crop
     )
 
     fun itemTextElement(
