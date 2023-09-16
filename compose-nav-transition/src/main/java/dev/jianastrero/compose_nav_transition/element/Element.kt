@@ -46,12 +46,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class Element(
-    internal val tag: String,
-    internal val modifier: Modifier = Modifier
+    internal open val tag: String,
+    internal open val modifier: Modifier = Modifier
 ) {
-    internal var rect: DpRect = DpRect(0.dp, 0.dp, 0.dp, 0.dp)
+    internal val rect = MutableStateFlow(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
 
     @Composable
     internal open fun Composable() {
@@ -59,10 +60,10 @@ abstract class Element(
     }
 }
 
-class TextElement(
-    tag: String,
+data class TextElement(
+    override val tag: String,
     internal val text: String,
-    modifier: Modifier = Modifier,
+    override val modifier: Modifier = Modifier,
     internal val fontSize: TextUnit = TextUnit.Unspecified,
     internal val fontWeight: FontWeight? = null,
     internal val fontStyle: FontStyle? = null,
@@ -99,10 +100,10 @@ class TextElement(
     }
 }
 
-class ImageElement(
-    tag: String,
+data class ImageElement(
+    override val tag: String,
     internal val painter: Painter,
-    modifier: Modifier = Modifier,
+    override val modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
     internal val contentScale: ContentScale = ContentScale.Fit,
 ) : Element(tag, modifier) {
@@ -117,10 +118,10 @@ class ImageElement(
     }
 }
 
-class IconElement(
-    tag: String,
+data class IconElement(
+    override val tag: String,
     internal val imageVector: ImageVector,
-    modifier: Modifier = Modifier,
+    override val modifier: Modifier = Modifier,
     internal val contentDescription: String? = null,
     internal val tint: Color = Color.Black
 ) : Element(tag, modifier) {
