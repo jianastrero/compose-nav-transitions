@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -51,10 +53,12 @@ abstract class Element(
     internal open val tag: String
 ) {
     internal val rect = MutableStateFlow(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
-    internal open val modifier: Modifier = Modifier
+    internal val modifier: MutableStateFlow<Modifier> = MutableStateFlow(Modifier)
 
     @Composable
     internal open fun Composable() {
+        val modifier by modifier.collectAsState()
+
         Spacer(modifier = modifier)
     }
 }
@@ -78,6 +82,8 @@ data class TextElement(
 ) : Element(tag) {
     @Composable
     override fun Composable() {
+        val modifier by modifier.collectAsState()
+
         Text(
             text = text,
             fontSize = fontSize,
@@ -106,6 +112,8 @@ data class ImageElement(
 ) : Element(tag) {
     @Composable
     override fun Composable() {
+        val modifier by modifier.collectAsState()
+
         Image(
             painter = painter,
             contentDescription = contentDescription,
@@ -123,6 +131,8 @@ data class IconElement(
 ) : Element(tag) {
     @Composable
     override fun Composable() {
+        val modifier by modifier.collectAsState()
+
         Icon(
             imageVector = imageVector,
             contentDescription = contentDescription,
