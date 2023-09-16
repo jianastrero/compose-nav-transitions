@@ -27,6 +27,6 @@ package dev.jianastrero.compose_nav_transition
 
 import androidx.compose.ui.geometry.Offset
 
-internal object NavTransitions {
+internal object NavTransitionManager {
     var hostOffset = Offset.Zero
 }

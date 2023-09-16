@@ -43,7 +43,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import dev.jianastrero.compose_nav_transition.NavTransitions
+import dev.jianastrero.compose_nav_transition.NavTransitionManager
 
 
 @Composable
@@ -93,7 +93,7 @@ fun NavTransitionHost(
         graph = navGraph,
         modifier = Modifier
             .onGloballyPositioned {
-                NavTransitions.hostOffset = it.positionInRoot()
+                NavTransitionManager.hostOffset = it.positionInRoot()
             }
             .then(modifier),
         contentAlignment = contentAlignment,
