@@ -27,24 +27,20 @@ package dev.jianastrero.compose_nav_transition
 
 import androidx.compose.ui.geometry.Offset
 import dev.jianastrero.compose_nav_transition.element.Element
-import dev.jianastrero.compose_nav_transition.element.EmptyTransitionElement
-import dev.jianastrero.compose_nav_transition.element.TransitionElement
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dev.jianastrero.compose_nav_transition.element.EmptyTransitionElements
+import dev.jianastrero.compose_nav_transition.element.TransitionElements
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 internal object NavTransitionManager {
 
-    private val defaultScope = CoroutineScope(Dispatchers.Default)
-    private val _transitionElements = MutableStateFlow(EmptyTransitionElement)
+    private val _transitionElements = MutableStateFlow(EmptyTransitionElements)
 
     var hostOffset = Offset.Zero
-
-    val transitionElements: StateFlow<TransitionElement> = _transitionElements
+    val transitionElements: StateFlow<TransitionElements> = _transitionElements
 
     suspend fun push(elements: List<Element>) {
         val stack = _transitionElements.value
-        _transitionElements.emit(TransitionElement(currentElements = elements, previousElements = stack.currentElements))
+        _transitionElements.emit(TransitionElements(currentElements = elements, previousElements = stack.currentElements))
     }
 }
