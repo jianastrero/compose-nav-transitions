@@ -39,7 +39,7 @@ class Element internal constructor() {
 
     fun connect(element: Element) {
         if (element == None) return
-        this.fromRect = element.rect
+        fromRect = element.rect.copy()
     }
 
     internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.let { lerpRect(it, rect, fraction) }
