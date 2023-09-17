@@ -24,22 +24,67 @@
 
 package dev.jianastrero.compose_nav_transition
 
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.navigation.NavBackStackEntry
 import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.element.EmptyTransitionElements
 import dev.jianastrero.compose_nav_transition.element.TransitionElements
+import dev.jianastrero.compose_nav_transition.logger.print
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 internal object NavTransitionManager {
 
-    private val _transitionElements = MutableStateFlow(EmptyTransitionElements)
-
-    var hostOffset = Offset.Zero
-    val transitionElements: StateFlow<TransitionElements> = _transitionElements
+    val transitionElements = MutableStateFlow(EmptyTransitionElements)
+    val transitionDuration = MutableStateFlow(600)
 
     suspend fun push(elements: List<Element>) {
-        val stack = _transitionElements.value
-        _transitionElements.emit(TransitionElements(currentElements = elements, previousElements = stack.currentElements))
+        val stack = transitionElements.value
+        transitionElements.emit(TransitionElements(currentElements = elements, previousElements = stack.currentElements))
+    }
+
+    @Composable
+    fun Transition(currentBackStackEntry: NavBackStackEntry?) {
+        val elements by transitionElements.collectAsState()
+        val transitionDuration by transitionDuration.collectAsState()
+        var animate by rememberSaveable(currentBackStackEntry) { mutableStateOf(false) }
+
+        val animateProgress by animateFloatAsState(
+            targetValue = if (animate) 0f else 1f,
+            label = "animateProgress",
+            animationSpec = if (animate) tween(transitionDuration) else tween(0)
+        )
+
+        Box(
+            modifier = Modifier
+                .alpha(animateProgress)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
+        ) {
+        }
+
+        LaunchedEffect(animate, currentBackStackEntry) {
+            animate.print("animate")
+            if (!animate) {
+                animate = true
+            }
+        }
+
+        LaunchedEffect(animateProgress) {
+            animateProgress.print("animateProgress")
+        }
     }
 }
