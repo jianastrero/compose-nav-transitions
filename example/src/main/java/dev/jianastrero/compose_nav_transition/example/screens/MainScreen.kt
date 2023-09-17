@@ -56,7 +56,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.example.R
@@ -176,10 +175,4 @@ private fun NavTransitionScope.Item(
                 .sharedElement("title")
         )
     }
-}
-
-@Preview
-@Composable
-private fun MainScreenPreview() {
-    NavTransitionScope.Preview.MainScreen(navigate = { _, _ -> })
 }

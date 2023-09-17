@@ -47,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jianastrero.compose_nav_transition.example.Constants
 import dev.jianastrero.compose_nav_transition.example.R
@@ -124,14 +123,4 @@ fun NavTransitionScope.NotificationDetailScreen(
                 .padding(16.dp)
         )
     }
-}
-
-@Preview
-@Composable
-private fun NotificationDetailScreenPreview() {
-    NavTransitionScope.Preview.NotificationDetailScreen(
-        id = 2,
-        back = {},
-        modifier = Modifier.fillMaxSize()
-    )
 }
