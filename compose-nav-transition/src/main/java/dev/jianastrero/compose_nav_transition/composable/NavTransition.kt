@@ -26,12 +26,14 @@ package dev.jianastrero.compose_nav_transition.composable
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -77,20 +79,33 @@ fun NavTransition(
     )
     val sharedRects by remember(elements, animationProgress) {
         derivedStateOf {
-            elements.mapNotNull { it.transitionDpRect(animationProgress) }
+            elements.mapNotNull { element ->
+                element.transitionDpRect(animationProgress)?.let { it to element }
+            }
         }
     }
 
     Box(modifier = modifier) {
         content()
         if (originalVisibleProgress != 1f) {
-            sharedRects.map { rect ->
-                Spacer(
-                    modifier = Modifier
-                        .absoluteOffset(x = rect.left, y = rect.top)
-                        .size(rect.width, rect.height)
-                        .background(color = Color.Red.copy(0.5f))
-                )
+            sharedRects.map { (rect, element) ->
+                element.imageData?.let { imageData ->
+                    Image(
+                        painter = imageData.painter,
+                        contentDescription = "Transition element",
+                        contentScale = imageData.contentScale,
+                        modifier = Modifier
+                            .absoluteOffset(x = rect.left, y = rect.top)
+                            .size(rect.width, rect.height)
+                    )
+                } ?: run {
+                    Spacer(
+                        modifier = Modifier
+                            .absoluteOffset(x = rect.left, y = rect.top)
+                            .size(rect.width, rect.height)
+                            .background(color = Color.LightGray.copy(0.6f), shape = MaterialTheme.shapes.small)
+                    )
+                }
             }
         }
     }

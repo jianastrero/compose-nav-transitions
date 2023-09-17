@@ -30,6 +30,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
@@ -38,10 +40,19 @@ class Element internal constructor() {
     internal var rect: DpRect by mutableStateOf(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
     private var fromRect: DpRect? by mutableStateOf(null)
     internal var alpha by mutableFloatStateOf(1f)
+    internal var imageData: ImageData? by mutableStateOf(null)
 
     fun connect(element: Element) {
         if (element == None) return
         fromRect = element.rect.copy()
+    }
+
+    fun with(painter: Painter): Painter = painter.also {
+        imageData = imageData?.copy(painter = it) ?: ImageData(it)
+    }
+
+    fun with(contentScale: ContentScale): ContentScale = contentScale.also {
+        imageData = imageData?.copy(contentScale = it)
     }
 
     internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.let { lerpRect(it, rect, fraction) }
@@ -65,6 +76,11 @@ class Element internal constructor() {
         val None = Element()
     }
 }
+
+data class ImageData(
+    val painter: Painter,
+    val contentScale: ContentScale = ContentScale.Fit
+)
 
 @Composable
 fun rememberElements(count: Int): Array<Element> {
