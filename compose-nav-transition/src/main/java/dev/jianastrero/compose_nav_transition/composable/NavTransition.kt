@@ -35,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import dev.jianastrero.compose_nav_transition.element.Element
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -54,11 +53,7 @@ fun NavTransition(
         animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt())
     )
 
-    Box(
-        modifier = Modifier
-            .alpha(animationProgress)
-            .then(modifier)
-    ) {
+    Box(modifier = modifier) {
         content()
     }
 
