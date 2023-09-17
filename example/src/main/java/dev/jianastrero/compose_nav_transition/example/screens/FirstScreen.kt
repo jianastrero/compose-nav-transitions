@@ -73,9 +73,9 @@ fun FirstScreen(
                 modifier = Modifier.sharedElement(label)
             )
             Image(
-                painter = painterResource(id = R.drawable.sample),
+                painter = image.with(painterResource(id = R.drawable.sample)),
                 contentDescription = "Sample Image",
-                contentScale = ContentScale.Crop,
+                contentScale = image.with(ContentScale.Crop),
                 modifier = Modifier
                     .size(200.dp)
                     .padding(top = 12.dp)

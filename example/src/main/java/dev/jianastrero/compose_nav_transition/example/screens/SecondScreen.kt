@@ -63,9 +63,9 @@ fun SecondScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.sample),
+                painter = image.with(painterResource(id = R.drawable.sample)),
                 contentDescription = "Sample Image",
-                contentScale = ContentScale.Crop,
+                contentScale = image.with(ContentScale.Crop),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onGotoFirstScreen(image, label) }
