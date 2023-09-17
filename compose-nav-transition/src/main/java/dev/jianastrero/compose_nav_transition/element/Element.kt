@@ -25,13 +25,44 @@
 package dev.jianastrero.compose_nav_transition.element
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 
-data class Element(
-    internal val rect: DpRect = DpRect(0.dp, 0.dp, 0.dp, 0.dp),
-)
+class Element internal constructor() {
+    internal var rect: DpRect by mutableStateOf(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
+    private var fromRect: DpRect? by mutableStateOf(null)
+
+    fun connect(element: Element) {
+        if (element == None) return
+        this.fromRect = element.rect
+    }
+
+    internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.let { lerpRect(it, rect, fraction) }
+
+    private fun lerpRect(start: DpRect, stop: DpRect, fraction: Float): DpRect {
+        val left = lerp(start.left, stop.left, fraction)
+        val top = lerp(start.top, stop.top, fraction)
+        val right = lerp(start.right, stop.right, fraction)
+        val bottom = lerp(start.bottom, stop.bottom, fraction)
+
+        return DpRect(left, top, right, bottom)
+    }
+
+    private fun lerp(
+        start: Dp,
+        stop: Dp,
+        fraction: Float
+    ): Dp = Dp(start.value + ((stop.value - start.value) * fraction))
+
+    companion object {
+        val None = Element()
+    }
+}
 
 @Composable
 fun rememberElements(count: Int): Array<Element> {
