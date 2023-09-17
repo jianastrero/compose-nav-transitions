@@ -24,13 +24,63 @@
 
 package dev.jianastrero.compose_nav_transition.example.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.jianastrero.compose_nav_transition.composable.NavTransition
+import dev.jianastrero.compose_nav_transition.example.R
 
 @Composable
 fun FirstScreen(
     onGotoSecondScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    NavTransition(
+        sharedElements = emptyList(),
+        modifier = modifier
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "First Screen",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Image(
+                painter = painterResource(id = R.drawable.sample),
+                contentDescription = "Sample Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(top = 12.dp)
+                    .clickable(onClick = onGotoSecondScreen)
+            )
+        }
+    }
+}
 
+@Preview
+@Composable
+private fun FirstScreenPreview() {
+    FirstScreen(
+        onGotoSecondScreen = {},
+        modifier = Modifier.fillMaxSize()
+    )
 }

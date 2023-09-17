@@ -24,13 +24,59 @@
 
 package dev.jianastrero.compose_nav_transition.example.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.jianastrero.compose_nav_transition.composable.NavTransition
+import dev.jianastrero.compose_nav_transition.example.R
 
 @Composable
 fun SecondScreen(
     onGotoFirstScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    NavTransition(
+        sharedElements = emptyList(),
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.sample),
+                contentDescription = "Sample Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onGotoFirstScreen)
+            )
+            Text(
+                text = "Second Screen",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(12.dp)
+            )
+        }
+    }
+}
 
+@Preview
+@Composable
+private fun SecondScreenPreview() {
+    SecondScreen(
+        onGotoFirstScreen = {},
+        modifier = Modifier.fillMaxSize()
+    )
 }
