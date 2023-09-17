@@ -56,7 +56,7 @@ fun SecondScreen(
     val (image, label) = rememberElements(count = 2)
 
     NavTransition(
-        sharedElements = listOf(image, label),
+        elements = listOf(image, label),
         modifier = modifier
     ) {
         Column(
