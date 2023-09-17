@@ -25,6 +25,7 @@
 package dev.jianastrero.compose_nav_transition.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.jianastrero.compose_nav_transition.element.Element
@@ -33,7 +34,7 @@ import dev.jianastrero.compose_nav_transition.element.Element
 fun NavTransition(
     sharedElements: List<Element>,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     Box(modifier = modifier) {
         content()
