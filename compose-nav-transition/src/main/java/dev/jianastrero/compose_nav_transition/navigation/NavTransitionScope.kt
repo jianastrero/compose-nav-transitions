@@ -24,13 +24,9 @@
 
 package dev.jianastrero.compose_nav_transition.navigation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -39,20 +35,19 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpRect
 import androidx.navigation.NavOptionsBuilder
 import dev.jianastrero.compose_nav_transition.element.Element
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
-class NavTransitionScope {
-    internal var previousElements: Collection<Element> by mutableStateOf(emptyList())
-    internal var elements: Collection<Element> by mutableStateOf(emptyList())
-    internal var alphaMap: Map<String, Float> by mutableStateOf(emptyMap())
-    internal var transitionDuration by mutableIntStateOf(0)
-    internal var passedElements: Collection<Element> by mutableStateOf(emptyList())
+class NavTransitionScope(initialElements: List<Element> = emptyList()) {
+
+    internal var elements = MutableStateFlow(initialElements)
 
     fun Modifier.sharedElement(tag: String): Modifier = composed {
         val density = LocalDensity.current
 
         onGloballyPositioned {
             addElement(density, tag, null, it)
-        }.alpha(alphaMap[tag] ?: 1f)
+        }
     }
 
     fun Modifier.sharedElement(element: Element): Modifier = composed {
@@ -60,47 +55,50 @@ class NavTransitionScope {
 
         onGloballyPositioned {
             addElement(density, element.tag, element, it)
-        }.alpha(alphaMap[element.tag] ?: 1f)
+        }
     }
 
     fun NavOptionsBuilder.sharedElements(vararg sharedElements: Element) {
-        passedElements = sharedElements.toList()
+
     }
 
-    private fun addElement(
+    private fun Modifier.addElement(
         density: Density,
         tag: String,
         element: Element?,
         layoutCoordinates: LayoutCoordinates
     ) {
-        val newElement = element ?: object : Element(tag) {}
-        with(density) {
-            newElement.rect = with(layoutCoordinates.positionInRoot()) {
-                val xDp = x.toDp()
-                val yDp = y.toDp()
+        elements.update {
+            val newElement = element ?: object : Element(tag) {}
+            newElement.modifier.update { this@addElement }
+            newElement.rect.update {
+                with(density) {
+                    with(layoutCoordinates.positionInRoot()) {
+                        val xDp = x.toDp()
+                        val yDp = y.toDp()
 
-                DpRect(
-                    left = xDp,
-                    top = yDp,
-                    right = (xDp + layoutCoordinates.size.width.toDp()),
-                    bottom = (yDp + layoutCoordinates.size.height.toDp())
-                )
+                        DpRect(
+                            left = xDp,
+                            top = yDp,
+                            right = (xDp + layoutCoordinates.size.width.toDp()),
+                            bottom = (yDp + layoutCoordinates.size.height.toDp())
+                        )
+                    }
+                }
             }
-            elements += newElement
+            it + newElement
         }
     }
 
-    internal fun resetElements(
-        elements: Collection<Element> = emptyList(),
-        previousElements: Collection<Element> = emptyList(),
-        passedElements: Collection<Element> = emptyList()
-    ) {
-        this.elements = elements
-        this.previousElements = previousElements
-        this.passedElements = passedElements
-    }
-
     companion object {
-        val Preview = NavTransitionScope()
+        val Saver = listSaver(
+            save = {
+                it.elements.value
+            },
+            restore = {
+                val elements = it.firstOrNull() ?: emptyList<Element>()
+                NavTransitionScope(elements)
+            }
+        )
     }
 }
