@@ -26,6 +26,7 @@ package dev.jianastrero.compose_nav_transition.element
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 class Element internal constructor() {
     internal var rect: DpRect by mutableStateOf(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
     private var fromRect: DpRect? by mutableStateOf(null)
+    internal var alpha by mutableFloatStateOf(1f)
 
     fun connect(element: Element) {
         if (element == None) return
