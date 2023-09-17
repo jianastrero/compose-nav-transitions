@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.jianastrero.compose_nav_transition.composable.NavTransition
+import dev.jianastrero.compose_nav_transition.element.rememberElements
 import dev.jianastrero.compose_nav_transition.example.R
 
 @Composable
@@ -47,6 +48,8 @@ fun SecondScreen(
     onGotoFirstScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val (image, label) = rememberElements(count = 2)
+
     NavTransition(
         sharedElements = emptyList(),
         modifier = modifier
