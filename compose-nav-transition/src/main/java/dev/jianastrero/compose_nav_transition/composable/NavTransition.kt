@@ -26,15 +26,29 @@ package dev.jianastrero.compose_nav_transition.composable
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.height
+import androidx.compose.ui.unit.width
 import dev.jianastrero.compose_nav_transition.element.Element
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -52,14 +66,43 @@ fun NavTransition(
         label = "animationProgress",
         animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt())
     )
+    val sharedRects by remember(sharedElements, animationProgress) {
+        derivedStateOf {
+            sharedElements.mapNotNull { it.transitionDpRect(animationProgress) }
+        }
+    }
 
     Box(modifier = modifier) {
         content()
+        sharedRects.forEach { rect ->
+            Spacer(
+                modifier = Modifier
+                    .absoluteOffset(x = rect.left, y = rect.top)
+                    .size(rect.width, rect.height)
+                    .background(color = Color.Red.copy(0.5f))
+            )
+        }
     }
 
     LaunchedEffect(animate) {
         if (!animate) {
             animate = true
+        }
+    }
+}
+
+fun Modifier.sharedElement(element: Element): Modifier = composed {
+    val density = LocalDensity.current
+
+    onGloballyPositioned {
+        element.rect = with(density) {
+            val position = it.positionInRoot()
+            DpRect(
+                left = position.x.toDp(),
+                top = position.y.toDp(),
+                right = (position.x + it.size.width).toDp(),
+                bottom = (position.y + it.size.height).toDp(),
+            )
         }
     }
 }
