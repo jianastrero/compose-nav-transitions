@@ -24,7 +24,6 @@
 
 package dev.jianastrero.compose_nav_transition.composable
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
