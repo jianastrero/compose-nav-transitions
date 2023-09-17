@@ -73,7 +73,7 @@ fun SecondScreen(
             )
             Text(
                 text = label.with("Second Screen"),
-                fontSize = label.withFontSize(32.sp),
+                fontSize = label.withFontSize(48.sp),
                 fontWeight = label.with(FontWeight.Bold),
                 modifier = Modifier
                     .padding(12.dp)
