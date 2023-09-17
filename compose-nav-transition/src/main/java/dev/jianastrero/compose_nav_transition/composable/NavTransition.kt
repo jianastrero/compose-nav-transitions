@@ -24,6 +24,7 @@
 
 package dev.jianastrero.compose_nav_transition.composable
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -61,10 +63,18 @@ fun NavTransition(
     content: @Composable BoxScope.() -> Unit
 ) {
     var animate by rememberSaveable { mutableStateOf(false) }
+    var originalVisible by rememberSaveable { mutableStateOf(false) }
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "animationProgress",
-        animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt())
+        animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt()),
+        finishedListener = {
+            originalVisible = true
+        }
+    )
+    val originalVisibleProgress by animateFloatAsState(
+        targetValue = if (originalVisible) 1f else 0f,
+        label = "originalVisibleProgress"
     )
     val sharedRects by remember(elements, animationProgress) {
         derivedStateOf {
@@ -74,19 +84,27 @@ fun NavTransition(
 
     Box(modifier = modifier) {
         content()
-        sharedRects.forEach { rect ->
-            Spacer(
-                modifier = Modifier
-                    .absoluteOffset(x = rect.left, y = rect.top)
-                    .size(rect.width, rect.height)
-                    .background(color = Color.Red.copy(0.5f))
-            )
+        if (originalVisibleProgress != 1f) {
+            sharedRects.map { rect ->
+                Spacer(
+                    modifier = Modifier
+                        .absoluteOffset(x = rect.left, y = rect.top)
+                        .size(rect.width, rect.height)
+                        .background(color = Color.Red.copy(0.5f))
+                )
+            }
         }
     }
 
     LaunchedEffect(animate) {
         if (!animate) {
             animate = true
+        }
+    }
+
+    LaunchedEffect(originalVisibleProgress) {
+        elements.forEach {
+            it.alpha = originalVisibleProgress
         }
     }
 }
@@ -105,4 +123,5 @@ fun Modifier.sharedElement(element: Element): Modifier = composed {
             )
         }
     }
+        .alpha(element.alpha)
 }
