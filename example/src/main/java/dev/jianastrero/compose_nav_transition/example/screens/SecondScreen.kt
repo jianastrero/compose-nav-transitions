@@ -40,18 +40,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.jianastrero.compose_nav_transition.composable.NavTransition
+import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.element.rememberElements
 import dev.jianastrero.compose_nav_transition.example.R
 
 @Composable
 fun SecondScreen(
-    onGotoFirstScreen: () -> Unit,
+    sharedElements: List<Element>,
+    onGotoFirstScreen: (List<Element>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val (image, label) = rememberElements(count = 2)
 
     NavTransition(
-        sharedElements = emptyList(),
+        sharedElements = sharedElements,
         modifier = modifier
     ) {
         Column(
@@ -63,7 +65,7 @@ fun SecondScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onGotoFirstScreen)
+                    .clickable { onGotoFirstScreen(listOf(image, label)) }
             )
             Text(
                 text = "Second Screen",
@@ -79,6 +81,7 @@ fun SecondScreen(
 @Composable
 private fun SecondScreenPreview() {
     SecondScreen(
+        sharedElements = emptyList(),
         onGotoFirstScreen = {},
         modifier = Modifier.fillMaxSize()
     )
