@@ -24,19 +24,47 @@
 
 package dev.jianastrero.compose_nav_transition.composable
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import dev.jianastrero.compose_nav_transition.element.Element
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun NavTransition(
     sharedElements: List<Element>,
     modifier: Modifier = Modifier,
+    transitionDuration: Duration = 600.milliseconds,
     content: @Composable BoxScope.() -> Unit
 ) {
-    Box(modifier = modifier) {
+    var animate by rememberSaveable { mutableStateOf(false) }
+    val animationProgress by animateFloatAsState(
+        targetValue = if (animate) 1f else 0f,
+        label = "animationProgress",
+        animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt())
+    )
+
+    Box(
+        modifier = Modifier
+            .alpha(animationProgress)
+            .then(modifier)
+    ) {
         content()
+    }
+
+    LaunchedEffect(animate) {
+        if (!animate) {
+            animate = true
+        }
     }
 }
