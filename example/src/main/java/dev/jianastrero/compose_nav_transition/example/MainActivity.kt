@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -23,7 +24,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var screen: ScreenState by rememberSaveable { mutableStateOf(ScreenState.FirstScreen) }
-            var sharedElements: List<Element> by rememberSaveable { mutableStateOf(emptyList()) }
+            var sharedImageElement: Element by remember { mutableStateOf(Element.None) }
+            var sharedLabelElement: Element by remember { mutableStateOf(Element.None) }
 
             AnimatedVisibility(
                 visible = screen == ScreenState.FirstScreen,
@@ -31,9 +33,11 @@ class MainActivity : ComponentActivity() {
                 exit = fadeOut(tween(600))
             ) {
                 FirstScreen(
-                    sharedElements = sharedElements,
-                    onGotoSecondScreen = {
-                        sharedElements = it
+                    sharedImageElement = sharedImageElement,
+                    sharedLabelElement = sharedLabelElement,
+                    onGotoSecondScreen = { image, label ->
+                        sharedImageElement = image
+                        sharedLabelElement = label
                         screen = ScreenState.SecondScreen
                     },
                     modifier = Modifier.fillMaxSize()
@@ -45,9 +49,11 @@ class MainActivity : ComponentActivity() {
                 exit = fadeOut(tween(600))
             ) {
                 SecondScreen(
-                    sharedElements = sharedElements,
-                    onGotoFirstScreen = {
-                        sharedElements = it
+                    sharedImageElement = sharedImageElement,
+                    sharedLabelElement = sharedLabelElement,
+                    onGotoFirstScreen = { image, label ->
+                        sharedImageElement = image
+                        sharedLabelElement = label
                         screen = ScreenState.FirstScreen
                     },
                     modifier = Modifier.fillMaxSize()

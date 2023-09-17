@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,20 +41,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.jianastrero.compose_nav_transition.composable.NavTransition
+import dev.jianastrero.compose_nav_transition.composable.sharedElement
 import dev.jianastrero.compose_nav_transition.element.Element
 import dev.jianastrero.compose_nav_transition.element.rememberElements
 import dev.jianastrero.compose_nav_transition.example.R
 
 @Composable
 fun SecondScreen(
-    sharedElements: List<Element>,
-    onGotoFirstScreen: (List<Element>) -> Unit,
+    sharedImageElement: Element,
+    sharedLabelElement: Element,
+    onGotoFirstScreen: (mage: Element, label: Element) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val (image, label) = rememberElements(count = 2)
 
     NavTransition(
-        sharedElements = sharedElements,
+        sharedElements = listOf(image, label),
         modifier = modifier
     ) {
         Column(
@@ -65,15 +68,23 @@ fun SecondScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onGotoFirstScreen(listOf(image, label)) }
+                    .clickable { onGotoFirstScreen(image, label) }
+                    .sharedElement(image)
             )
             Text(
                 text = "Second Screen",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier
+                    .padding(12.dp)
+                    .sharedElement(label)
             )
         }
+    }
+
+    LaunchedEffect(sharedImageElement, sharedLabelElement) {
+        image.connect(sharedImageElement)
+        label.connect(sharedLabelElement)
     }
 }
 
@@ -81,8 +92,9 @@ fun SecondScreen(
 @Composable
 private fun SecondScreenPreview() {
     SecondScreen(
-        sharedElements = emptyList(),
-        onGotoFirstScreen = {},
+        sharedImageElement = Element.None,
+        sharedLabelElement = Element.None,
+        onGotoFirstScreen = { _, _ -> },
         modifier = Modifier.fillMaxSize()
     )
 }
