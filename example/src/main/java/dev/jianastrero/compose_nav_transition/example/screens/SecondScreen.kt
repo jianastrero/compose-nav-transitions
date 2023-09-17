@@ -72,9 +72,9 @@ fun SecondScreen(
                     .sharedElement(image)
             )
             Text(
-                text = "Second Screen",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
+                text = label.with("Second Screen"),
+                fontSize = label.withFontSize(32.sp),
+                fontWeight = label.with(FontWeight.Bold),
                 modifier = Modifier
                     .padding(12.dp)
                     .sharedElement(label)

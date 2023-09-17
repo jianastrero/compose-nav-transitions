@@ -67,9 +67,9 @@ fun FirstScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "First Screen",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                text = label.with("First Screen"),
+                fontSize = label.withFontSize(24.sp),
+                fontWeight = label.with(FontWeight.Bold),
                 modifier = Modifier.sharedElement(label)
             )
             Image(
