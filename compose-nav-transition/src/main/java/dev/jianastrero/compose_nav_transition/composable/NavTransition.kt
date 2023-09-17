@@ -55,7 +55,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun NavTransition(
-    sharedElements: List<Element>,
+    elements: List<Element>,
     modifier: Modifier = Modifier,
     transitionDuration: Duration = 600.milliseconds,
     content: @Composable BoxScope.() -> Unit
@@ -66,9 +66,9 @@ fun NavTransition(
         label = "animationProgress",
         animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt())
     )
-    val sharedRects by remember(sharedElements, animationProgress) {
+    val sharedRects by remember(elements, animationProgress) {
         derivedStateOf {
-            sharedElements.mapNotNull { it.transitionDpRect(animationProgress) }
+            elements.mapNotNull { it.transitionDpRect(animationProgress) }
         }
     }
 
