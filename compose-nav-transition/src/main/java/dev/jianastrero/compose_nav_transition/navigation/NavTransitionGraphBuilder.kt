@@ -24,26 +24,18 @@
 
 package dev.jianastrero.compose_nav_transition.navigation
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavigatorProvider
 import androidx.navigation.compose.composable
-import dev.jianastrero.compose_nav_transition.component.NavTransitionContainer
 
 class NavTransitionGraphBuilder(
     provider: NavigatorProvider,
     startDestination: String,
-    route: String?,
-    internal val onScopeChanged: (NavTransitionScope) -> Unit
+    route: String?
 ) : NavGraphBuilder(provider, startDestination, route)
 
 fun NavTransitionGraphBuilder.transitionComposable(
@@ -55,27 +47,9 @@ fun NavTransitionGraphBuilder.transitionComposable(
         route = route,
         arguments = arguments
     ) { navBackStackEntry ->
-        val lifecycleOwner = LocalLifecycleOwner.current
-        val scope = remember {
-            NavTransitionScope()
-        }
+        val scope = remember { NavTransitionScope() }
 
-        scope.NavTransitionContainer(modifier = Modifier.fillMaxSize()) {
-            scope.content(navBackStackEntry)
-        }
-
-        DisposableEffect(lifecycleOwner) {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_CREATE) {
-                    onScopeChanged(scope)
-                }
-            }
-
-            lifecycleOwner.lifecycle.addObserver(observer)
-
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
+        scope.content(navBackStackEntry)
     }
 }
+
