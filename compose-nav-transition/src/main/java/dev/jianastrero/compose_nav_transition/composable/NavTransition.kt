@@ -33,7 +33,9 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -89,7 +91,27 @@ fun NavTransition(
         content()
         if (originalVisibleProgress != 1f) {
             sharedRects.map { (rect, element) ->
-                element.imageData?.let { imageData ->
+                element.textData?.let { textData ->
+                    Text(
+                        text = textData.text,
+                        color = textData.textColor,
+                        fontSize = textData.fontSize,
+                        fontStyle = textData.fontStyle,
+                        fontWeight = textData.fontWeight,
+                        fontFamily = textData.fontFamily,
+                        textAlign = textData.textAlign,
+                        textDecoration = textData.textDecoration,
+                        lineHeight = textData.lineHeight,
+                        letterSpacing = textData.letterSpacing,
+                        overflow = textData.overflow,
+                        softWrap = textData.softWrap,
+                        maxLines = textData.maxLines,
+                        style = textData.style ?: LocalTextStyle.current,
+                        modifier = Modifier
+                            .absoluteOffset(x = rect.left, y = rect.top)
+                            .size(rect.width, rect.height)
+                    )
+                } ?: element.imageData?.let { imageData ->
                     Image(
                         painter = imageData.painter,
                         contentDescription = "Transition element",

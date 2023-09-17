@@ -30,21 +30,34 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 class Element internal constructor() {
+    internal var alpha by mutableFloatStateOf(1f)
     internal var rect: DpRect by mutableStateOf(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
     private var fromRect: DpRect? by mutableStateOf(null)
-    internal var alpha by mutableFloatStateOf(1f)
     internal var imageData: ImageData? by mutableStateOf(null)
+    internal var textData: TextData? by mutableStateOf(null)
+    private var fromTextData: TextData? by mutableStateOf(null)
 
     fun connect(element: Element) {
         if (element == None) return
         fromRect = element.rect.copy()
+        fromTextData = element.fromTextData?.copy()
     }
 
     fun with(painter: Painter): Painter = painter.also {
@@ -55,22 +68,67 @@ class Element internal constructor() {
         imageData = imageData?.copy(contentScale = it)
     }
 
-    internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.let { lerpRect(it, rect, fraction) }
-
-    private fun lerpRect(start: DpRect, stop: DpRect, fraction: Float): DpRect {
-        val left = lerp(start.left, stop.left, fraction)
-        val top = lerp(start.top, stop.top, fraction)
-        val right = lerp(start.right, stop.right, fraction)
-        val bottom = lerp(start.bottom, stop.bottom, fraction)
-
-        return DpRect(left, top, right, bottom)
+    fun with(text: String): String = text.also {
+        textData = textData?.copy(text = it) ?: TextData(it)
     }
 
-    private fun lerp(
-        start: Dp,
-        stop: Dp,
-        fraction: Float
-    ): Dp = Dp(start.value + ((stop.value - start.value) * fraction))
+    fun with(textColor: Color): Color = textColor.also {
+        textData = textData?.copy(textColor = it) ?: TextData(text = "", textColor = it)
+    }
+
+    fun withFontSize(fontSize: TextUnit): TextUnit = fontSize.also {
+        textData = textData?.copy(fontSize = it) ?: TextData(text = "", fontSize = it)
+    }
+
+    fun with(fontStyle: FontStyle?): FontStyle? = fontStyle.also {
+        textData = textData?.copy(fontStyle = it) ?: TextData(text = "", fontStyle = it)
+    }
+
+    fun with(fontWeight: FontWeight?): FontWeight? = fontWeight.also {
+        textData = textData?.copy(fontWeight = it) ?: TextData(text = "", fontWeight = it)
+    }
+
+    fun with(fontFamily: FontFamily?): FontFamily? = fontFamily.also {
+        textData = textData?.copy(fontFamily = it) ?: TextData(text = "", fontFamily = it)
+    }
+
+    fun withLetterSpacing(letterSpacing: TextUnit): TextUnit = letterSpacing.also {
+        textData = textData?.copy(letterSpacing = it) ?: TextData(text = "", letterSpacing = it)
+    }
+
+    fun with(textDecoration: TextDecoration?): TextDecoration? = textDecoration.also {
+        textData = textData?.copy(textDecoration = it) ?: TextData(text = "", textDecoration = it)
+    }
+
+    fun with(textAlign: TextAlign?): TextAlign? = textAlign.also {
+        textData = textData?.copy(textAlign = it) ?: TextData(text = "", textAlign = it)
+    }
+
+    fun withLineHeight(lineHeight: TextUnit): TextUnit = lineHeight.also {
+        textData = textData?.copy(lineHeight = it) ?: TextData(text = "", lineHeight = it)
+    }
+
+    fun with(overflow: TextOverflow): TextOverflow = overflow.also {
+        textData = textData?.copy(overflow = it) ?: TextData(text = "", overflow = it)
+    }
+
+    fun with(softWrap: Boolean): Boolean = softWrap.also {
+        textData = textData?.copy(softWrap = it) ?: TextData(text = "", softWrap = it)
+    }
+
+    fun with(maxLines: Int): Int = maxLines.also {
+        textData = textData?.copy(maxLines = it) ?: TextData(text = "", maxLines = it)
+    }
+
+    fun with(onTextLayout: (TextLayoutResult) -> Unit): (TextLayoutResult) -> Unit = onTextLayout.also {
+        textData = textData?.copy(onTextLayout = it) ?: TextData(text = "", onTextLayout = it)
+    }
+
+    fun with(style: TextStyle?): TextStyle? = style.also {
+        textData = textData?.copy(style = it) ?: TextData(text = "", style = it)
+    }
+
+    internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.lerpRect(rect, fraction)
 
     companion object {
         val None = Element()
@@ -82,7 +140,39 @@ data class ImageData(
     val contentScale: ContentScale = ContentScale.Fit
 )
 
+data class TextData(
+    val text: String,
+    val textColor: Color = Color.Unspecified,
+    val fontSize: TextUnit = TextUnit.Unspecified,
+    val fontStyle: FontStyle? = null,
+    val fontWeight: FontWeight? = null,
+    val fontFamily: FontFamily? = null,
+    val letterSpacing: TextUnit = TextUnit.Unspecified,
+    val textDecoration: TextDecoration? = null,
+    val textAlign: TextAlign? = null,
+    val lineHeight: TextUnit = TextUnit.Unspecified,
+    val overflow: TextOverflow = TextOverflow.Clip,
+    val softWrap: Boolean = true,
+    val maxLines: Int = Int.MAX_VALUE,
+    val onTextLayout: (TextLayoutResult) -> Unit = {},
+    val style: TextStyle? = null
+)
+
 @Composable
 fun rememberElements(count: Int): Array<Element> {
     return rememberSaveable(count) { Array(count) { Element() } }
 }
+
+private fun DpRect.lerpRect(stop: DpRect, fraction: Float): DpRect {
+    val left = left.lerp(stop.left, fraction)
+    val top = top.lerp(stop.top, fraction)
+    val right = right.lerp(stop.right, fraction)
+    val bottom = bottom.lerp(stop.bottom, fraction)
+
+    return DpRect(left, top, right, bottom)
+}
+
+private fun Dp.lerp(
+    stop: Dp,
+    fraction: Float
+): Dp = Dp(value + ((stop.value - value) * fraction))
