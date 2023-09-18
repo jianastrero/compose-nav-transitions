@@ -64,7 +64,7 @@ import dev.jianastrero.compose_nav_transition.element.Element
 fun NavTransition(
     elements: List<Element>,
     modifier: Modifier = Modifier,
-    animationSpec: AnimationSpec<Float> = tween(1600),
+    animationSpec: AnimationSpec<Float> = tween(600),
     content: @Composable BoxScope.() -> Unit
 ) {
     var animate by rememberSaveable { mutableStateOf(false) }
