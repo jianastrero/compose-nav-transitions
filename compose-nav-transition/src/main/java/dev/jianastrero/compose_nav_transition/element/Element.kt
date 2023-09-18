@@ -24,6 +24,7 @@
 
 package dev.jianastrero.compose_nav_transition.element
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -33,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -49,15 +48,16 @@ import androidx.compose.ui.unit.dp
 class Element internal constructor() {
     internal var alpha by mutableFloatStateOf(1f)
     internal var rect: DpRect by mutableStateOf(DpRect(0.dp, 0.dp, 0.dp, 0.dp))
-    private var fromRect: DpRect? by mutableStateOf(null)
+    internal var fromRect: DpRect? by mutableStateOf(null)
     internal var imageData: ImageData? by mutableStateOf(null)
     internal var textData: TextData? by mutableStateOf(null)
-    private var fromTextData: TextData? by mutableStateOf(null)
+    internal var fromTextData: TextData? by mutableStateOf(null)
 
     fun connect(element: Element) {
         if (element == None) return
         fromRect = element.rect.copy()
-        fromTextData = element.fromTextData?.copy()
+        Log.d("JIANDDEBUG", "element.fromTextData: ${element.textData}")
+        fromTextData = element.textData
     }
 
     fun with(painter: Painter): Painter = painter.also {
@@ -120,15 +120,9 @@ class Element internal constructor() {
         textData = textData?.copy(maxLines = it) ?: TextData(text = "", maxLines = it)
     }
 
-    fun with(onTextLayout: (TextLayoutResult) -> Unit): (TextLayoutResult) -> Unit = onTextLayout.also {
-        textData = textData?.copy(onTextLayout = it) ?: TextData(text = "", onTextLayout = it)
-    }
-
     fun with(style: TextStyle?): TextStyle? = style.also {
         textData = textData?.copy(style = it) ?: TextData(text = "", style = it)
     }
-
-    internal fun transitionDpRect(fraction: Float): DpRect? = fromRect?.lerpRect(rect, fraction)
 
     companion object {
         val None = Element()
@@ -154,7 +148,6 @@ data class TextData(
     val overflow: TextOverflow = TextOverflow.Clip,
     val softWrap: Boolean = true,
     val maxLines: Int = Int.MAX_VALUE,
-    val onTextLayout: (TextLayoutResult) -> Unit = {},
     val style: TextStyle? = null
 )
 
@@ -162,17 +155,3 @@ data class TextData(
 fun rememberElements(count: Int): Array<Element> {
     return rememberSaveable(count) { Array(count) { Element() } }
 }
-
-private fun DpRect.lerpRect(stop: DpRect, fraction: Float): DpRect {
-    val left = left.lerp(stop.left, fraction)
-    val top = top.lerp(stop.top, fraction)
-    val right = right.lerp(stop.right, fraction)
-    val bottom = bottom.lerp(stop.bottom, fraction)
-
-    return DpRect(left, top, right, bottom)
-}
-
-private fun Dp.lerp(
-    stop: Dp,
-    fraction: Float
-): Dp = Dp(value + ((stop.value - value) * fraction))

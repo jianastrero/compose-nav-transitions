@@ -24,9 +24,10 @@
 
 package dev.jianastrero.compose_nav_transition.composable
 
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -51,18 +52,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
 import dev.jianastrero.compose_nav_transition.element.Element
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun NavTransition(
     elements: List<Element>,
     modifier: Modifier = Modifier,
-    transitionDuration: Duration = 600.milliseconds,
+    animationSpec: AnimationSpec<Float> = tween(1600),
     content: @Composable BoxScope.() -> Unit
 ) {
     var animate by rememberSaveable { mutableStateOf(false) }
@@ -70,19 +71,38 @@ fun NavTransition(
     val animationProgress by animateFloatAsState(
         targetValue = if (animate) 1f else 0f,
         label = "animationProgress",
-        animationSpec = tween(transitionDuration.inWholeMilliseconds.toInt()),
+        animationSpec = animationSpec,
         finishedListener = {
             originalVisible = true
         }
     )
     val originalVisibleProgress by animateFloatAsState(
         targetValue = if (originalVisible) 1f else 0f,
-        label = "originalVisibleProgress"
+        label = "originalVisibleProgress",
+        animationSpec = spring()
     )
     val sharedRects by remember(elements, animationProgress) {
         derivedStateOf {
             elements.mapNotNull { element ->
-                element.transitionDpRect(animationProgress)?.let { it to element }
+                if (element.textData == null || element.imageData == null) return@mapNotNull null
+                element.transitionDpRect(animationProgress)
+            }
+        }
+    }
+    val sharedTexts by remember {
+        derivedStateOf {
+            elements.mapNotNull { element ->
+                val textData = element.textData ?: return@mapNotNull null
+                val rect = element.transitionDpRect(animationProgress) ?: return@mapNotNull null
+                val fontSize = element.textData?.fontSize?.transitionTextUnit(
+                    element.fromTextData?.fontSize,
+                    animationProgress
+                ) ?: return@mapNotNull null
+                val letterSpacing = element.textData?.letterSpacing?.transitionTextUnit(
+                    element.fromTextData?.letterSpacing,
+                    animationProgress
+                ) ?: return@mapNotNull null
+                rect to textData.copy(fontSize = fontSize, letterSpacing = letterSpacing)
             }
         }
     }
@@ -90,44 +110,34 @@ fun NavTransition(
     Box(modifier = modifier) {
         content()
         if (originalVisibleProgress != 1f) {
-            sharedRects.map { (rect, element) ->
-                element.textData?.let { textData ->
-                    Text(
-                        text = textData.text,
-                        color = textData.textColor,
-                        fontSize = textData.fontSize,
-                        fontStyle = textData.fontStyle,
-                        fontWeight = textData.fontWeight,
-                        fontFamily = textData.fontFamily,
-                        textAlign = textData.textAlign,
-                        textDecoration = textData.textDecoration,
-                        lineHeight = textData.lineHeight,
-                        letterSpacing = textData.letterSpacing,
-                        overflow = textData.overflow,
-                        softWrap = textData.softWrap,
-                        maxLines = textData.maxLines,
-                        style = textData.style ?: LocalTextStyle.current,
-                        modifier = Modifier
-                            .absoluteOffset(x = rect.left, y = rect.top)
-                            .size(rect.width, rect.height)
-                    )
-                } ?: element.imageData?.let { imageData ->
-                    Image(
-                        painter = imageData.painter,
-                        contentDescription = "Transition element",
-                        contentScale = imageData.contentScale,
-                        modifier = Modifier
-                            .absoluteOffset(x = rect.left, y = rect.top)
-                            .size(rect.width, rect.height)
-                    )
-                } ?: run {
-                    Spacer(
-                        modifier = Modifier
-                            .absoluteOffset(x = rect.left, y = rect.top)
-                            .size(rect.width, rect.height)
-                            .background(color = Color.LightGray.copy(0.6f), shape = MaterialTheme.shapes.small)
-                    )
-                }
+            sharedRects.map { rect ->
+                Spacer(
+                    modifier = Modifier
+                        .absoluteOffset(x = rect.left, y = rect.top)
+                        .size(rect.width, rect.height)
+                        .background(color = Color.LightGray.copy(0.6f), shape = MaterialTheme.shapes.small)
+                )
+            }
+            sharedTexts.map { (rect, textData) ->
+                Text(
+                    text = textData.text,
+                    color = textData.textColor,
+                    fontSize = textData.fontSize,
+                    fontStyle = textData.fontStyle,
+                    fontWeight = textData.fontWeight,
+                    fontFamily = textData.fontFamily,
+                    letterSpacing = textData.letterSpacing,
+                    textDecoration = textData.textDecoration,
+                    textAlign = textData.textAlign,
+                    lineHeight = textData.lineHeight,
+                    overflow = textData.overflow,
+                    softWrap = textData.softWrap,
+                    maxLines = textData.maxLines,
+                    style = textData.style ?: LocalTextStyle.current,
+                    modifier = Modifier
+                        .absoluteOffset(x = rect.left, y = rect.top)
+                        .size(rect.width, rect.height)
+                )
             }
         }
     }
@@ -160,4 +170,34 @@ fun Modifier.sharedElement(element: Element): Modifier = composed {
         }
     }
         .alpha(element.alpha)
+}
+
+internal fun Element.transitionDpRect(fraction: Float): DpRect? = fromRect?.lerpRect(rect, fraction)
+
+internal fun TextUnit?.transitionTextUnit(from: TextUnit?, fraction: Float): TextUnit? =
+    from?.lerp(
+        this ?: TextUnit.Unspecified,
+        fraction
+    )
+
+internal fun DpRect.lerpRect(stop: DpRect, fraction: Float): DpRect {
+    val left = left.lerp(stop.left, fraction)
+    val top = top.lerp(stop.top, fraction)
+    val right = right.lerp(stop.right, fraction)
+    val bottom = bottom.lerp(stop.bottom, fraction)
+
+    return DpRect(left, top, right, bottom)
+}
+
+internal fun Dp.lerp(
+    stop: Dp,
+    fraction: Float
+): Dp = Dp(value + ((stop.value - value) * fraction))
+
+internal fun TextUnit.lerp(stop: TextUnit, fraction: Float): TextUnit {
+    return when {
+        this == TextUnit.Unspecified -> stop
+        stop == TextUnit.Unspecified -> this
+        else -> TextUnit(value + ((stop.value - value) * fraction), type)
+    }
 }
