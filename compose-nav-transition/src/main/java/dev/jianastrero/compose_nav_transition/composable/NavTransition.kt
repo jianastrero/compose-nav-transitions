@@ -28,6 +28,7 @@ import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -106,6 +107,15 @@ fun NavTransition(
             }
         }
     }
+    val sharedImages by remember {
+        derivedStateOf {
+            elements.mapNotNull {
+                val imageData = it.imageData ?: return@mapNotNull null
+                val rect = it.transitionDpRect(animationProgress) ?: return@mapNotNull null
+                rect to imageData
+            }
+        }
+    }
 
     Box(modifier = modifier) {
         content()
@@ -116,6 +126,16 @@ fun NavTransition(
                         .absoluteOffset(x = rect.left, y = rect.top)
                         .size(rect.width, rect.height)
                         .background(color = Color.LightGray.copy(0.6f), shape = MaterialTheme.shapes.small)
+                )
+            }
+            sharedImages.map { (rect, imageData) ->
+                Image(
+                    painter = imageData.painter,
+                    contentDescription = "Transition image",
+                    contentScale = imageData.contentScale,
+                    modifier = Modifier
+                        .absoluteOffset(x = rect.left, y = rect.top)
+                        .size(rect.width, rect.height)
                 )
             }
             sharedTexts.map { (rect, textData) ->
