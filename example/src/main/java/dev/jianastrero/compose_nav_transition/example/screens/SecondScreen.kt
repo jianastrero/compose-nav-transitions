@@ -77,7 +77,7 @@ fun SecondScreen(
                 fontSize = label.withFontSize(32.sp),
                 fontWeight = label.with(FontWeight.Bold),
                 letterSpacing = label.withLetterSpacing(10.sp),
-                textAlign = label.with(TextAlign.Start),
+                textAlign = label.with(TextAlign.Center),
                 modifier = Modifier
                     .padding(12.dp)
                     .fillMaxWidth()
