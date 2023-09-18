@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,10 +74,13 @@ fun SecondScreen(
             )
             Text(
                 text = label.with("Second Screen"),
-                fontSize = label.withFontSize(48.sp),
+                fontSize = label.withFontSize(32.sp),
                 fontWeight = label.with(FontWeight.Bold),
+                letterSpacing = label.withLetterSpacing(10.sp),
+                textAlign = label.with(TextAlign.Start),
                 modifier = Modifier
                     .padding(12.dp)
+                    .fillMaxWidth()
                     .sharedElement(label)
             )
         }
